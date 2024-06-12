@@ -19,4 +19,3 @@ jobs:
           npm i -g @liara/cli@5
           liara deploy --app="flask-apps" --api-token="$LIARA_TOKEN" --no-app-logs
 
-          
