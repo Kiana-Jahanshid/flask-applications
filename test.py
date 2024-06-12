@@ -5,7 +5,7 @@ from deepface import DeepFace
 
 
 objects = DeepFace.analyze(
-    img_path = "ME.jpg" ,
+    img_path = "uploads/ME.jpg" ,
     actions=("age" , "emotion" , "gender") 
 )
 

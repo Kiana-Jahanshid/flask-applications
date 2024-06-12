@@ -73,8 +73,8 @@ def upload() :
                 upload_path = os.path.join(app.config["UPLOAD_FOLDER"] , user_image.filename)
                 user_image.save(upload_path) # means : save my image in this path
                 # user input image will be saved in uploads folder
-
-                result = DeepFace.analyze(img_path = upload_path ,actions=["age" , "emotion" , "gender"] )
+                print(upload_path)
+                result = DeepFace.analyze(img_path = upload_path ,actions=("age" , "emotion" , "gender") )
                 age = result[0]["age"]
                 emotion =  result[0]["dominant_emotion"]
                 gender = result[0]["dominant_gender"]
