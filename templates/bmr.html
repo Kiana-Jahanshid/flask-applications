@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- mobile metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <!-- site metas -->
+    <title>Element</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="author" content="">	
+    <!-- bootstrap css -->
+    <link rel="stylesheet" type="text/css" href="static/css/bootstrap.min.css">
+    <!-- style css -->
+    <link rel="stylesheet" type="text/css" href="static/css/style.css">
+    <!-- Responsive-->
+    <link rel="stylesheet" href="static/css/responsive.css">
+    <!-- fevicon -->
+    <link rel="icon" href="static/images/fevicon.png" type="image/gif" />
+    <!-- Scrollbar Custom CSS -->
+    <link rel="stylesheet" href="static/css/jquery.mCustomScrollbar.min.css">
+    <!-- Tweaks for older IEs-->
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+    <!-- owl stylesheets --> 
+    <link rel="stylesheet" href="static/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="static/css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+
+
+</head>
+<body>
+	<div class="header_section">
+		<div class="container-fluid">
+			<nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                  <ul class="navbar-nav">
+                    <li class="nav-item active">
+                      <a class="nav-link" href="/">HOME</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="/bmr">BMR</a>
+                    </li>                    
+                    <li class="nav-item">
+                      <a class="nav-link" href="/login">LOGIN/SIGNUP</a>
+                    </li>                    
+
+                    <!-- <li class="nav-item">
+                      <a class="nav-link" href="/contact">CONTACT</a>
+                    </li> -->
+                  </ul>
+                </div>
+            </nav>
+		</div>
+	</div>
+
+
+
+<div class="footer_section layout_padding">
+  <div class="footer_main">
+    <div class="col-lg-6" style="float:none;margin:auto;">  
+            <h1 class="landing_text"> Calculate Your BMR </h1>
+            <h2> </h2>
+            <form action="" method="POST">
+                <div class="txt_field2">
+                    <input type="text" name="age" required>
+                    <span></span>
+                    <label>Age</label>
+                </div>
+                <div class="txt_field2">
+                    <input type="text" name="weight" required>
+                    <span></span>
+                    <label>Weight(kg)</label>
+                </div>
+                <div class="txt_field2">
+                  <input type="text" name="height" required>
+                  <span></span>
+                  <label>Height(cm)</label>
+                </div>
+                <div class="txt_field2">
+                  <input type="text" name="gender" required>
+                  <span></span>
+                  <label>Gender(female/male)</label>
+                </div>
+
+                
+                <div class="read_bt_main1">
+                  <!-- <div class="read_text_2"><a href="#">Calculate</a></div> -->
+                  <button class="button-73" role="button" id="button" href="#result" >Calculate</button>
+                  <div id="result"></div>
+                </div>
+            </form>
+		</div>
+	</div>
+</div>
+
+<section id="result" class="result">
+  <div class="container" >
+    <div class="about_bg">
+
+        <p class="result">
+          <h2 class="about_text" >YOUR BMR IS  :  {{ bmr_result }}  </h2><br>
+            <h6  class="ipsum_text"> This is the minimum number of calories that your body needs to perform basic functions </h6>
+        </p>                  
+    
+        <!-- <script src="static/js/script.js"></script>  -->
+
+      <div>
+        <table class="styled-table">
+          <thead>
+              <tr>
+                  <th>Age Range</th>
+                  <th>Gender</th>
+                  <th>BMR Range (kcal/day)</th>
+              </tr>
+          </thead>
+          
+          <tbody>
+              <tr>
+                  <td>18-29</td>
+                  <td>Male</td>
+                  <td>1,800-2,400</td>
+              </tr>
+              <tr>
+                <td>18-29</td>
+                <td>Female</td>
+                <td>1,400-2,000</td>
+              </tr>
+              <tr>
+                <td>30-59</td>
+                <td>Male</td>
+                <td>1,600-2,200</td>
+              </tr>
+              <tr>
+                <td>30-59</td>
+                <td>Female</td>
+                <td>1,200-1,800</td>
+              </tr>
+              <tr>
+                <td>60+</td>
+                <td>Male</td>
+                <td>1,400-2,000</td>
+              </tr>            
+              <tr>
+                <td>60+</td>
+                <td>Female</td>
+                <td>1,200-1,600</td>
+              </tr>            
+              <tr class="active-row">
+              </tr>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+    <!-- <script>src="static/js/bootstrap.js"</script> -->
+
+    <script src="static/js/jquery.min.js"></script>
+    <script src="static/js/popper.min.js"></script>
+    <script src="static/js/bootstrap.bundle.min.js"></script>
+    <script src="static/js/jquery-3.0.0.min.js"></script>
+    <script src="static/js/plugin.js"></script>
+    <!-- sidebar -->
+    <script src="static/js/jquery.mCustomScrollbar.concat.min.js"></script>
+    <script src="static/js/custom.js"></script>
+    <!-- javascript --> 
+    <script src="static/js/owl.carousel.min.js"></script>
+    <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+
+</body>
+</html>
+
+
+
