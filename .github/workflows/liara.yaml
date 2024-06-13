@@ -14,8 +14,8 @@ jobs:
           node-version: "18"
       - name: update-liara
         env:
-          LIARA_TOKEN: ${{ secrets.LIARA_API_TOKEN2 }}
+          LIARA_TOKEN: ${{ secrets.LIARA_API_TOKEN3 }}
         run: |
           npm i -g @liara/cli@5
-          liara deploy --app="flask-application" --api-token="$LIARA_TOKEN" --no-app-logs
+          liara deploy --app="flask-applications" --api-token="$LIARA_TOKEN" --no-app-logs --port=3005 
 
