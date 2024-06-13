@@ -1,4 +1,5 @@
 flask
 opencv-python
 deepface
-tf_keras
+tf-keras
+psycopg2-binary
