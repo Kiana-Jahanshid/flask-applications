@@ -91,25 +91,24 @@
                 
                 <div class="read_bt_main1">
                   <!-- <div class="read_text_2"><a href="#">Calculate</a></div> -->
-                  <button class="button-73" role="button" id="button" href="#result" >Calculate</button>
-                  <div id="result"></div>
+                  <button class="button-73" role="button" onClick="window.location.href='#down1'"  >Calculate</button>
+                  <!-- <div id="result"></div> -->
                 </div>
             </form>
 		</div>
 	</div>
 </div>
 
-<section id="result" class="result">
-  <div class="container" >
-    <div class="about_bg">
 
-        <p class="result">
+
+
+<div class="container" >
+    <div  class="about_bg">
           <h2 class="about_text" >YOUR BMR IS  :  {{ bmr_result }}  </h2><br>
             <h6  class="ipsum_text"> This is the minimum number of calories that your body needs to perform basic functions </h6>
-        </p>                  
     
-        <!-- <script src="static/js/script.js"></script>  -->
-
+      
+      <div id="down1"><a href="down1"></a> </div>
       <div>
         <table class="styled-table">
           <thead>
@@ -155,20 +154,13 @@
               </tr>
           </tbody>
         </table>
-
       </div>
     </div>
-  </div>
-</section>
-
-
-
-
+</div>
 
 
 
     <!-- <script>src="static/js/bootstrap.js"</script> -->
-
     <script src="static/js/jquery.min.js"></script>
     <script src="static/js/popper.min.js"></script>
     <script src="static/js/bootstrap.bundle.min.js"></script>

@@ -1,4 +1,5 @@
 flask
 opencv-python
-tf-keras
 psycopg2-binary
+asyncio
+asgiref

@@ -1,14 +1,19 @@
 import os
-# os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+import cv2.data
 from flask import Flask , render_template , request, redirect,session , url_for
 import cv2
-# from deepface import DeepFace
+from deepface import DeepFace
+import asyncio
+
+
 app =Flask("face analysis")
 
 # define some configs
-app.config["UPLOAD_FOLDER"] = "./uploads" # folder which uploaded file will be saved in
+app.config["UPLOAD_FOLDER"] = "static/images/" # folder which uploaded file will be saved in
 app.config["ALLOWED_EXTENSIONS"] = {"png" , "jpg" , "jpeg"}
 
+face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
 
 def auth(email , password):
@@ -58,7 +63,7 @@ def login():
 # get : for showing upload page to user
 # post : when uploading an image
 @app.route("/upload" , methods=["GET" ,"POST"])
-def upload() :
+async def upload() :
     if request.method == "GET" :
         return render_template("upload.html")
 
@@ -70,15 +75,22 @@ def upload() :
         else :
             if user_image  and  allowed_files(user_image.filename): # if image is not null , and check file postfix
                 upload_path = os.path.join(app.config["UPLOAD_FOLDER"] , user_image.filename)
-                user_image.save(upload_path) # means : save my image in this path
-                # user input image will be saved in uploads folder
+                user_image.save(upload_path) # save image in this path
+                image = cv2.imread(filename=upload_path)
+                gray_frame = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+                rgb_frame = cv2.cvtColor(gray_frame, cv2.COLOR_GRAY2RGB)
+                faces = face_cascade.detectMultiScale(gray_frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+                for (x, y, w, h) in faces:
+                    face_roi = rgb_frame[y:y + h, x:x + w]                
+                result = DeepFace.analyze(face_roi ,actions=["age" , "emotion", "gender" , "race"] , enforce_detection=False)
+                asyncio.sleep(11)
+                age = result[0]["age"]
+                emotion = result[0]["dominant_emotion"]
+                gender = result[0]["dominant_gender"]
+                race = result[0]["dominant_race"]
+                upload_path  = str(upload_path)
                 print(upload_path)
-                #result = DeepFace.analyze(img_path = upload_path ,actions=("age" , "emotion" , "gender") )
-                age = 1#result[0]["age"]
-                emotion = 1 #result[0]["dominant_emotion"]
-                gender = 1#result[0]["dominant_gender"]
-                print(age , emotion , gender)
-                return render_template("result.html" , age=age , emotion=emotion , gender=gender )
+                return render_template("result.html" ,image_link= upload_path ,  age=age , emotion=emotion , gender=gender , race= race )
 
 
 
@@ -93,6 +105,7 @@ def bmr_calc():
         height = float( request.form["height"])
         gender = request.form["gender"]
         print(age , weight , height , gender)
+
         if gender == "female" or gender == "Female" :
             bmr_result = (10*weight) + (6.25*height) - (5*age) - 161
         
@@ -107,17 +120,6 @@ def bmr_calc():
 # how to run
 # bc our main file is app.py , so ther is no need to use ""app"" word in command
 # flask run --debug
-
-
-
-
-
-
-
-
-
-
-
 
 
 

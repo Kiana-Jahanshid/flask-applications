@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en"  dir="ltr">
 <head>
@@ -69,13 +70,17 @@
                     <h1>Upload your face image : </h1>
                     <p> </p>
 
-                    <form method="post" enctype="multipart/form-data"> <!-- input tag should be in the form tag -->
+                    <form method="post" enctype="multipart/form-data"> 
                         <div>
-                        <input name="image" class="form-control form-control-lg" id="formFileLg" type="file">
+                        <input name="image" class="form-control form-control-lg" id="formFileLg" type="file" accept=".jpg , .jpeg , .png">
+                        <img id="output">
                         </div>
 
-                        <button type="submit" class="btn btn-primary">Submit</button> 
-
+                        <button id="upload-submit" type="submit" class="btn btn-primary">Submit</button> 
+                        
+                        <h2></h2>
+                        <div id="loader" class="loader"></div>
+                        <p class="website_text" style="padding-top: 70px;">please wait for 10 seconds to process your image .... </p>
                     </form>
                 </div>
             </div>
@@ -84,7 +89,14 @@
 
 
 
-    <script>src="static/js/bootstrap.js"</script>
+    <script>src="static/js/bootstrap.js"
+        document.getElementById("loader").style.display ="none";
+        function openTest() {
+            document.getElementById("loader").style.display = "block";
+        }
+        document.getElementById('upload-submit').addEventListener('click', openTest);
+         
+    </script>
 </body>
 </html>
 

@@ -5,9 +5,9 @@ from deepface import DeepFace
 
 
 objects = DeepFace.analyze(
-    img_path = "uploads/ME.jpg" ,
-    actions=("age" , "emotion" , "gender") 
+    img_path = "uploads/g.jpg" ,
+    actions=( "emotion" , "gender" , "race") , enforce_detection=False
 )
 
-print(objects[0]["age"]  , objects[0]["dominant_emotion"] , objects[0]["dominant_gender"] )
+print(objects[0]["dominant_race"]  , objects[0]["dominant_emotion"] , objects[0]["dominant_gender"] )
 
