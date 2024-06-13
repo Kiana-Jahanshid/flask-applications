@@ -5,7 +5,6 @@ EXPOSE 5000
 
 # Upgrade pip and install requirements
 COPY requirements.txt requirements.txt
-RUN pip install -U pip
 RUN pip install -r requirements.txt
 
 # Copy app code and set working directory
