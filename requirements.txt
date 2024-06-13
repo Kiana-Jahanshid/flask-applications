@@ -5,3 +5,4 @@ asgiref
 tf-keras
 deepface
 tensorrt
+gunicorn
