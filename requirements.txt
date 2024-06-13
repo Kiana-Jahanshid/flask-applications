@@ -1,5 +1,4 @@
 flask
 opencv-python
 psycopg2-binary
-asyncio
 asgiref

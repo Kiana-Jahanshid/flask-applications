@@ -90,7 +90,7 @@ async def upload() :
                 race = result[0]["dominant_race"]
                 upload_path  = str(upload_path)
                 print(upload_path)
-                return render_template("result.html" ,image_link= upload_path ,  age=age , emotion=emotion , gender=gender , race= race )
+                return render_template("result.html" ,image_link= upload_path ,  age=age , emotion=emotion , gender=gender , race=race )
 
 
 
