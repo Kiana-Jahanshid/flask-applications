@@ -2,3 +2,4 @@ flask
 opencv-python
 psycopg2-binary
 asgiref
+tf-keras

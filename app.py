@@ -1,5 +1,5 @@
 import os
-os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+# os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 import cv2.data
 from flask import Flask , render_template , request, redirect,session , url_for
 import cv2
