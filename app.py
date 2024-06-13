@@ -1,9 +1,8 @@
 import os
-os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+# os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 from flask import Flask , render_template , request, redirect,session , url_for
 import cv2
-from deepface import DeepFace
-
+# from deepface import DeepFace
 app =Flask("face analysis")
 
 # define some configs
@@ -74,10 +73,10 @@ def upload() :
                 user_image.save(upload_path) # means : save my image in this path
                 # user input image will be saved in uploads folder
                 print(upload_path)
-                result = DeepFace.analyze(img_path = upload_path ,actions=("age" , "emotion" , "gender") )
-                age = result[0]["age"]
-                emotion =  result[0]["dominant_emotion"]
-                gender = result[0]["dominant_gender"]
+                #result = DeepFace.analyze(img_path = upload_path ,actions=("age" , "emotion" , "gender") )
+                age = 1#result[0]["age"]
+                emotion = 1 #result[0]["dominant_emotion"]
+                gender = 1#result[0]["dominant_gender"]
                 print(age , emotion , gender)
                 return render_template("result.html" , age=age , emotion=emotion , gender=gender )
 
