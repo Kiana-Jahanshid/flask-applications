@@ -68,7 +68,7 @@ def login():
 # get : for showing upload page to user
 # post : when uploading an image
 @app.route("/upload" , methods=["GET" ,"POST"])
-async def upload() :
+def upload() :
     if request.method == "GET" :
         return render_template("upload.html")
 
@@ -87,16 +87,16 @@ async def upload() :
                 faces = face_cascade.detectMultiScale(gray_frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
                 for (x, y, w, h) in faces:
                     face_roi = rgb_frame[y:y + h, x:x + w]                
-                result = DeepFace.analyze(face_roi ,actions=["age" , "emotion", "gender" , "race"] , enforce_detection=False)
+                #result = DeepFace.analyze(face_roi ,actions=["age" , "emotion", "gender" , "race"] , enforce_detection=False)
                 
-                await asyncio.sleep(11)
-                age = result[0]["age"]
-                emotion = result[0]["dominant_emotion"]
-                gender = result[0]["dominant_gender"]
+                #await asyncio.sleep(11)
+                #age = result[0]["age"]
+                #emotion = result[0]["dominant_emotion"]
+                #gender = result[0]["dominant_gender"]
                 #race = result[0]["dominant_race"]
                 upload_path  = str(upload_path)
                 print(upload_path)
-                return render_template("result.html" ,image_link= upload_path ,  age=age , emotion=emotion , gender=gender )
+                return render_template("result.html" ,image_link= upload_path ,  age="45" , emotion="sad" , gender="man" )
 
 
 
