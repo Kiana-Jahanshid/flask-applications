@@ -12,7 +12,7 @@ import asyncio
 app =Flask("face analysis")
 
 # define some configs
-app.config["UPLOAD_FOLDER"] = "public/" # folder which uploaded file will be saved in
+app.config["UPLOAD_FOLDER"] = "./public/" # folder which uploaded file will be saved in
 app.config["ALLOWED_EXTENSIONS"] = {"png" , "jpg" , "jpeg"}
 # app.config["FLASK_APP"] = "app.py"
 # app.config["FLASK_ENV"]="development"
@@ -94,8 +94,8 @@ def upload() :
                 #emotion = result[0]["dominant_emotion"]
                 #gender = result[0]["dominant_gender"]
                 #race = result[0]["dominant_race"]
-                
-                return render_template("result.html" ,image_link= upload_path ,  age="45" , emotion="sad" , gender="man" )
+                print(user_image.filename)
+                return render_template("upload.html" ,image_link= user_image.filename ,  age="45" , emotion="sad" , gender="man" )
 
 
 

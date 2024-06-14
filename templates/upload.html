@@ -70,18 +70,39 @@
                     <h1>Upload your face image : </h1>
                     <p> </p>
 
-                    <form method="post" enctype="multipart/form-data"> 
+                    <form method="post" enctype="multipart/form-data" > 
                         <div>
-                        <input name="image" class="form-control form-control-lg" id="formFileLg" type="file" accept=".jpg , .jpeg , .png">
+                        <input name="image" class="form-control form-control-lg" id="imgInp" type="file" accept="image/*"  >
                         <img id="output">
                         </div>
-
                         <button id="upload-submit" type="submit" class="btn btn-primary">Submit</button> 
                         
+
                         <h2></h2>
-                        <div id="loader" class="loader"></div>
-                        <p class="website_text" style="padding-top: 70px;">please wait for 10 seconds to process your image .... </p>
+                        <div id="loader" class="loader"  ></div>
+                        <p class="website_text" style="padding-top: 40px; padding-bottom: 40px; font-size: 19px; ">please wait for 10 seconds to process your image .... </p>
+                    
+                        <form runat="server">
+                            <h2 style=" text-align: center;">
+                                age :  <b> {{ age }} </b> <br>
+                                emotion :  <b> {{ emotion }} </b> <br>
+                                gender : <b> {{ gender }} </b> <br>
+                            </h2>
+                        
+                            <!-- <input accept="image/*" type='file' id="imgInp" /> -->
+                            <!-- <img id="blah" src="#"  /> -->
+                        </form>           
+
+                          <h3> </h3>                 
+                            <!-- <div class="container">
+                            <div class='file-preview-image' style="text-align: left;"><img src="{{ image_link }}" , width="300px"></div>
+                            </div> -->
+                        
+
+
+                        
                     </form>
+
                 </div>
             </div>
         </div>       
@@ -96,6 +117,16 @@
         }
         document.getElementById('upload-submit').addEventListener('click', openTest);
          
+    </script>
+    <script>
+
+        imgInp.onchange = evt => {
+            const [file] = imgInp.files
+            if (file) {
+              blah.src = URL.createObjectURL(file)
+            }
+          }
+
     </script>
 </body>
 </html>
