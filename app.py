@@ -54,14 +54,12 @@ def login():
         # if email & pass are correct , user will be navigate to upload page
         result= auth(user_email , user_pass)
         if result :
-            # show upload page
             # we cant use this : return render_template("upload.html")
             return redirect(url_for("upload")) # go and run below upload function
 
 
         # if email or pass was wrong , user will be send back to login page
         else :
-            # show login page
             return redirect(url_for("login"))
 
 
