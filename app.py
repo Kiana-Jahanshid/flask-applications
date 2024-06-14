@@ -5,7 +5,6 @@ from flask import Flask , render_template , request, redirect,session , url_for
 import cv2
 from deepface import DeepFace
 import asyncio
-from functools import wraps
 
 # from gevent.pywsgi import WSGIServer
 
@@ -18,7 +17,7 @@ app.config["ALLOWED_EXTENSIONS"] = {"png" , "jpg" , "jpeg"}
 # app.config["FLASK_APP"] = "app.py"
 # app.config["FLASK_ENV"]="development"
 
-face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+#face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
 
 def auth(email , password):
@@ -66,7 +65,7 @@ def login():
 # get : for showing upload page to user
 # post : when uploading an image
 @app.route("/upload" , methods=["GET" ,"POST"])
-def upload() :
+async def upload() :
     if request.method == "GET" :
         return render_template("upload.html")
 
@@ -79,18 +78,18 @@ def upload() :
             if user_image  and  allowed_files(user_image.filename): # if image is not null , and check file postfix
                 upload_path = os.path.join(app.config["UPLOAD_FOLDER"] , user_image.filename)
                 user_image.save(upload_path) # save image in this path
-                image = cv2.imread(filename=upload_path)
-                gray_frame = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-                rgb_frame = cv2.cvtColor(gray_frame, cv2.COLOR_GRAY2RGB)
-                faces = face_cascade.detectMultiScale(gray_frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
-                for (x, y, w, h) in faces:
-                    face_roi = rgb_frame[y:y + h, x:x + w]                
-                #result = DeepFace.analyze(face_roi ,actions=["age" , "emotion", "gender" , "race"] , enforce_detection=False)
+                # image = cv2.imread(filename=upload_path)
+                # gray_frame = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+                # rgb_frame = cv2.cvtColor(gray_frame, cv2.COLOR_GRAY2RGB)
+                # faces = face_cascade.detectMultiScale(gray_frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+                # for (x, y, w, h) in faces:
+                #     face_roi = rgb_frame[y:y + h, x:x + w]                
+                result = DeepFace.analyze(upload_path ,actions=["age" , "emotion", "gender" ] , enforce_detection=False)
                 
-                #await asyncio.sleep(11)
-                #age = result[0]["age"]
-                #emotion = result[0]["dominant_emotion"]
-                #gender = result[0]["dominant_gender"]
+                await asyncio.sleep(11)
+                age = result[0]["age"]
+                emotion = result[0]["dominant_emotion"]
+                gender = result[0]["dominant_gender"]
                 #race = result[0]["dominant_race"]
                 upload_path  = str(upload_path)
                 print(upload_path)
