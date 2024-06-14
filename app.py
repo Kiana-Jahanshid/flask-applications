@@ -89,7 +89,7 @@ async def upload() :
                     face_roi = rgb_frame[y:y + h, x:x + w]                
                 result = DeepFace.analyze(face_roi ,actions=["age" , "emotion", "gender" , "race"] , enforce_detection=False)
                 
-                await asyncio.sleep(12)
+                await asyncio.sleep(11)
                 age = result[0]["age"]
                 emotion = result[0]["dominant_emotion"]
                 gender = result[0]["dominant_gender"]
