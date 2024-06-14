@@ -12,7 +12,7 @@ import asyncio
 app =Flask("face analysis")
 
 # define some configs
-app.config["UPLOAD_FOLDER"] = "static/images/" # folder which uploaded file will be saved in
+app.config["UPLOAD_FOLDER"] = "uploads/" # folder which uploaded file will be saved in
 app.config["ALLOWED_EXTENSIONS"] = {"png" , "jpg" , "jpeg"}
 # app.config["FLASK_APP"] = "app.py"
 # app.config["FLASK_ENV"]="development"
@@ -78,7 +78,9 @@ def upload() :
             if user_image  and  allowed_files(user_image.filename): # if image is not null , and check file postfix
                 upload_path = os.path.join(app.config["UPLOAD_FOLDER"] , user_image.filename)
                 user_image.save(upload_path) # save image in this path
-                # image = cv2.imread(filename=upload_path)
+
+                image = cv2.imread(filename=upload_path)
+                image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
                 # gray_frame = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
                 # rgb_frame = cv2.cvtColor(gray_frame, cv2.COLOR_GRAY2RGB)
                 # faces = face_cascade.detectMultiScale(gray_frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
