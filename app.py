@@ -5,7 +5,6 @@ from flask import Flask , render_template , request, redirect,session , url_for
 import cv2
 from deepface import DeepFace
 import asyncio
-import setuptools
 # from gevent.pywsgi import WSGIServer
 
 
@@ -14,8 +13,8 @@ app =Flask("face analysis")
 # define some configs
 app.config["UPLOAD_FOLDER"] = "static/images/" # folder which uploaded file will be saved in
 app.config["ALLOWED_EXTENSIONS"] = {"png" , "jpg" , "jpeg"}
-app.config["FLASK_APP"] = "app.py"
-app.config["FLASK_ENV"]="development"
+# app.config["FLASK_APP"] = "app.py"
+# app.config["FLASK_ENV"]="development"
 
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 

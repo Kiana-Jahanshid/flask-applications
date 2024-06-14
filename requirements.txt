@@ -4,5 +4,4 @@ psycopg2-binary
 asgiref
 tf-keras
 deepface
-tensorrt
-gunicorn
+Gunicorn
