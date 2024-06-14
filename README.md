@@ -19,5 +19,5 @@ flask run --debug
 
 + app link :
 ```
-https://flask-applications.liara.run/
+https://flask-app.liara.run/
 ```
