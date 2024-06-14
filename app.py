@@ -32,11 +32,6 @@ def allowed_files(filename):
     return True
 
 
-def async_action(f):
-    @wraps(f)
-    def wrapped(*args, **kwargs):
-        return asyncio.run(f(*args, **kwargs))
-    return wrapped
 
 
 @app.route("/" , methods=["GET"]) # its only GET (bc we dont want to send any info to backend)
@@ -73,7 +68,6 @@ def login():
 # get : for showing upload page to user
 # post : when uploading an image
 @app.route("/upload" , methods=["GET" ,"POST"])
-@async_action
 async def upload() :
     if request.method == "GET" :
         return render_template("upload.html")
@@ -99,10 +93,10 @@ async def upload() :
                 age = result[0]["age"]
                 emotion = result[0]["dominant_emotion"]
                 gender = result[0]["dominant_gender"]
-                race = result[0]["dominant_race"]
+                #race = result[0]["dominant_race"]
                 upload_path  = str(upload_path)
                 print(upload_path)
-                return render_template("result.html" ,image_link= upload_path ,  age=age , emotion=emotion , gender=gender , race=race )
+                return render_template("result.html" ,image_link= upload_path ,  age=age , emotion=emotion , gender=gender )
 
 
 
