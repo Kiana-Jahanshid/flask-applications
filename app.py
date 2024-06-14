@@ -12,7 +12,7 @@ import asyncio
 app =Flask("face analysis")
 
 # define some configs
-app.config["UPLOAD_FOLDER"] = "./uploads" # folder which uploaded file will be saved in
+app.config["UPLOAD_FOLDER"] = "static/img/" # folder which uploaded file will be saved in
 app.config["ALLOWED_EXTENSIONS"] = {"png" , "jpg" , "jpeg"}
 # app.config["FLASK_APP"] = "app.py"
 # app.config["FLASK_ENV"]="development"
