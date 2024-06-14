@@ -12,7 +12,7 @@ import asyncio
 app =Flask("face analysis")
 
 # define some configs
-app.config["UPLOAD_FOLDER"] = "uploads/" # folder which uploaded file will be saved in
+app.config["UPLOAD_FOLDER"] = "static/public/" # folder which uploaded file will be saved in
 app.config["ALLOWED_EXTENSIONS"] = {"png" , "jpg" , "jpeg"}
 # app.config["FLASK_APP"] = "app.py"
 # app.config["FLASK_ENV"]="development"
@@ -78,7 +78,8 @@ def upload() :
             if user_image  and  allowed_files(user_image.filename): # if image is not null , and check file postfix
                 upload_path = os.path.join(app.config["UPLOAD_FOLDER"] , user_image.filename)
                 user_image.save(upload_path) # save image in this path
-
+                upload_path  = str(upload_path)  
+                print(upload_path) 
                 image = cv2.imread(filename=upload_path)
                 image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
                 # gray_frame = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -93,8 +94,7 @@ def upload() :
                 #emotion = result[0]["dominant_emotion"]
                 #gender = result[0]["dominant_gender"]
                 #race = result[0]["dominant_race"]
-                upload_path  = str(upload_path)
-                print(upload_path)
+                
                 return render_template("result.html" ,image_link= upload_path ,  age="45" , emotion="sad" , gender="man" )
 
 
