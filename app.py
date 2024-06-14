@@ -65,7 +65,7 @@ def login():
 # get : for showing upload page to user
 # post : when uploading an image
 @app.route("/upload" , methods=["GET" ,"POST"])
-async def upload() :
+def upload() :
     if request.method == "GET" :
         return render_template("upload.html")
 
@@ -86,7 +86,7 @@ async def upload() :
                 #     face_roi = rgb_frame[y:y + h, x:x + w]                
                 #result = DeepFace.analyze(upload_path ,actions=["age" , "emotion", "gender" ] , enforce_detection=False)
                 
-                await asyncio.sleep(11)
+                #await asyncio.sleep(11)
                 #age = result[0]["age"]
                 #emotion = result[0]["dominant_emotion"]
                 #gender = result[0]["dominant_gender"]
