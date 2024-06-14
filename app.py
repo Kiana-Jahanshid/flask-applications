@@ -5,6 +5,8 @@ from flask import Flask , render_template , request, redirect,session , url_for
 import cv2
 from deepface import DeepFace
 import asyncio
+from functools import wraps
+
 # from gevent.pywsgi import WSGIServer
 
 
@@ -30,6 +32,11 @@ def allowed_files(filename):
     return True
 
 
+def async_action(f):
+    @wraps(f)
+    def wrapped(*args, **kwargs):
+        return asyncio.run(f(*args, **kwargs))
+    return wrapped
 
 
 @app.route("/" , methods=["GET"]) # its only GET (bc we dont want to send any info to backend)
@@ -66,6 +73,7 @@ def login():
 # get : for showing upload page to user
 # post : when uploading an image
 @app.route("/upload" , methods=["GET" ,"POST"])
+@async_action
 async def upload() :
     if request.method == "GET" :
         return render_template("upload.html")
@@ -86,6 +94,7 @@ async def upload() :
                 for (x, y, w, h) in faces:
                     face_roi = rgb_frame[y:y + h, x:x + w]                
                 result = DeepFace.analyze(face_roi ,actions=["age" , "emotion", "gender" , "race"] , enforce_detection=False)
+                
                 await asyncio.sleep(12)
                 age = result[0]["age"]
                 emotion = result[0]["dominant_emotion"]
@@ -129,3 +138,8 @@ def bmr_calc():
 # if __name__ == "__main__":
 #     http_server = WSGIServer(('', 5000), app)
 #     http_server.serve_forever()
+
+
+
+# env:FLASK_ENV = "development"
+# flask run
