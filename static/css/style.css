@@ -1208,3 +1208,7 @@ a,a:hover{
 input[type=file]{
     padding:10px;
     background:#2d2d2d;}
+
+
+.imageflex { display: flex; }
+.imageflexcontent { margin-left: 5px; margin-top: 0; }

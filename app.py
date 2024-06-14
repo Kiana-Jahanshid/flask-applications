@@ -1,7 +1,7 @@
 import os
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 import cv2.data
-from flask import Flask , render_template , request, redirect,session , url_for
+from flask import Flask , render_template , request, redirect,session , url_for , make_response
 import cv2
 #from deepface import DeepFace
 import asyncio
@@ -12,7 +12,7 @@ import asyncio
 app =Flask("face analysis")
 
 # define some configs
-app.config["UPLOAD_FOLDER"] = "./public/" # folder which uploaded file will be saved in
+app.config["UPLOAD_FOLDER"] = "./uploads" # folder which uploaded file will be saved in
 app.config["ALLOWED_EXTENSIONS"] = {"png" , "jpg" , "jpeg"}
 # app.config["FLASK_APP"] = "app.py"
 # app.config["FLASK_ENV"]="development"
@@ -35,7 +35,6 @@ def allowed_files(filename):
 
 @app.route("/" , methods=["GET"]) # its only GET (bc we dont want to send any info to backend)
 def main_page():
-
     return render_template("index.html")
 
 
@@ -55,8 +54,6 @@ def login():
         if result :
             # we cant use this : return render_template("upload.html")
             return redirect(url_for("upload")) # go and run below upload function
-
-
         # if email or pass was wrong , user will be send back to login page
         else :
             return redirect(url_for("login"))
@@ -67,37 +64,37 @@ def login():
 @app.route("/upload" , methods=["GET" ,"POST"])
 def upload() :
     if request.method == "GET" :
-        return render_template("upload.html")
+        return make_response(render_template("upload.html"))
 
     elif request.method == "POST" :
-        user_image = request.files["image"] # name of input tag was image in login file # uploaded file is in  ( request.files() )
-        # check if file is uploaded correctly
-        if user_image.filename == "" :
-            return redirect(url_for("upload"))
-        else :
-            if user_image  and  allowed_files(user_image.filename): # if image is not null , and check file postfix
-                upload_path = os.path.join(app.config["UPLOAD_FOLDER"] , user_image.filename)
-                user_image.save(upload_path) # save image in this path
-                upload_path  = str(upload_path)  
-                print(upload_path) 
-                image = cv2.imread(filename=upload_path)
-                image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-                # gray_frame = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-                # rgb_frame = cv2.cvtColor(gray_frame, cv2.COLOR_GRAY2RGB)
-                # faces = face_cascade.detectMultiScale(gray_frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
-                # for (x, y, w, h) in faces:
-                #     face_roi = rgb_frame[y:y + h, x:x + w]                
-                #result = DeepFace.analyze(upload_path ,actions=["age" , "emotion", "gender" ] , enforce_detection=False)
-                
-                #await asyncio.sleep(11)
-                #age = result[0]["age"]
-                #emotion = result[0]["dominant_emotion"]
-                #gender = result[0]["dominant_gender"]
-                #race = result[0]["dominant_race"]
-                print(user_image.filename)
-                return render_template("upload.html" ,image_link= user_image.filename ,  age="45" , emotion="sad" , gender="man" )
+       
+            user_image = request.files["image"] # name of input tag was image in login file # uploaded file is in  ( request.files() )
+            # check if file is uploaded correctly
+            if user_image.filename == "" :
+                return make_response(render_template("upload.html"))#redirect(url_for("upload"))
+            else :
+                if user_image  and  allowed_files(user_image.filename): # if image is not null , and check file postfix
+                    upload_path = os.path.join(app.config["UPLOAD_FOLDER"] , user_image.filename)
+                    user_image.save(upload_path) # save image in this path
+                    upload_path  = str(upload_path)  
+                    print(upload_path) 
+                    image = cv2.imread(filename=upload_path)
+                    #image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)                
+                    #result = DeepFace.analyze(upload_path ,actions=["age" , "emotion", "gender" ] , enforce_detection=False)
+                    
+                    #await asyncio.sleep(11)
+                    #age = result[0]["age"]
+                    #emotion = result[0]["dominant_emotion"]
+                    #gender = result[0]["dominant_gender"]
+                    #race = result[0]["dominant_race"]
 
+                    save_path = os.path.join("static/img/", user_image.filename)
+                    cv2.imwrite(save_path, image)
+                    print(user_image.filename)
+                    result = make_response(render_template("upload.html" ,image_link= save_path ,  age="45" , emotion="sad" , gender="man" ))
+                    return result
 
+        
 
 @app.route("/bmr" , methods=["GET" , "POST"])
 def bmr_calc():
