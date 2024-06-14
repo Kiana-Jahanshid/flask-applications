@@ -1,0 +1,8 @@
+{
+    "disks": [
+      {
+        "name": "flask-disk",
+        "mountTo": "static/uploads"
+      }
+    ]
+}
