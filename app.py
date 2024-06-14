@@ -3,7 +3,7 @@ os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 import cv2.data
 from flask import Flask , render_template , request, redirect,session , url_for
 import cv2
-from deepface import DeepFace
+#from deepface import DeepFace
 import asyncio
 
 # from gevent.pywsgi import WSGIServer
@@ -84,12 +84,12 @@ async def upload() :
                 # faces = face_cascade.detectMultiScale(gray_frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
                 # for (x, y, w, h) in faces:
                 #     face_roi = rgb_frame[y:y + h, x:x + w]                
-                result = DeepFace.analyze(upload_path ,actions=["age" , "emotion", "gender" ] , enforce_detection=False)
+                #result = DeepFace.analyze(upload_path ,actions=["age" , "emotion", "gender" ] , enforce_detection=False)
                 
                 await asyncio.sleep(11)
-                age = result[0]["age"]
-                emotion = result[0]["dominant_emotion"]
-                gender = result[0]["dominant_gender"]
+                #age = result[0]["age"]
+                #emotion = result[0]["dominant_emotion"]
+                #gender = result[0]["dominant_gender"]
                 #race = result[0]["dominant_race"]
                 upload_path  = str(upload_path)
                 print(upload_path)
