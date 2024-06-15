@@ -80,12 +80,12 @@ def upload() :
                     print(upload_path) 
                     image = cv2.imread(filename=upload_path)
                     #image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)                
-                    result = DeepFace.analyze(upload_path ,actions=["age" , "emotion", "gender" ] , enforce_detection=False)
+                    #result = DeepFace.analyze(upload_path ,actions=["age" , "emotion", "gender" ] , enforce_detection=False)
                     
                     #await asyncio.sleep(11)
-                    age = result[0]["age"]
-                    emotion = result[0]["dominant_emotion"]
-                    gender = result[0]["dominant_gender"]
+                    #age = result[0]["age"]
+                    #emotion = result[0]["dominant_emotion"]
+                    #gender = result[0]["dominant_gender"]
                     #race = result[0]["dominant_race"]
 
                     save_path = os.path.join("static/uploads/", user_image.filename)
