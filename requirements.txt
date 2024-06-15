@@ -2,4 +2,5 @@ Flask
 opencv-python
 psycopg2-binary
 asgiref
+cmake
 dlib
