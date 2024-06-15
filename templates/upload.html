@@ -61,39 +61,24 @@
     </div>
 
 
-    <section class="myform-area">
-        <div class="container">
+    <section class="myform-area" >
+        <div class="container" style=" padding-bottom: 145px;">
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <p> </p>
                     <p> </p>
-                    <h1>Upload your face image : </h1>
+                    <h1 style=" padding-top: 40px;">Upload your face image : </h1>
                     <p> </p>
 
-                    <form method="post" enctype="multipart/form-data" > 
+                    <form method="post" enctype="multipart/form-data"> 
                         <div>
                         <input name="image" class="form-control form-control-lg" id="imgInp" type="file" accept="image/*"  >
                         <img id="output">
                         </div>
-                        <button id="upload-submit" type="submit" class="btn btn-primary btn-lg">Submit</button> 
-                        
-
-                        <h2></h2>
-                        <div id="loader" class="loader"  ></div>
-                        <p class="website_text" style="padding-top: 30px; padding-bottom: 35px; font-size: 19px; ">please wait for 10 seconds to process your image .... </p>
-                    
-                        <form runat="server">
-                            <div class="col-lg-6" style="float:none;margin:auto;">
-                            <h2 style=" text-align: center;">
-                                age :  <b> {{ age }} </b> <br>
-                                emotion :  <b> {{ emotion }} </b> <br>
-                                gender : <b> {{ gender }} </b> <br>
-                            </h2>
-                        
-                            <img src="{{ image_link }}" style="width: 300px;">
-                            </div>
-                        </form>           
-
+                        <button id="upload-submit" type="submit" class="btn btn-primary btn-lg">Submit</button>         
+                        <p> </p>
+                        <p> </p>
+                        <span></span>
                     </form>
                 </div>
             </div>

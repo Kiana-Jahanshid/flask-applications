@@ -60,32 +60,44 @@
     </div>
 
 
+
     <section class="myform-area">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-8">
+                    <p> </p>
 
-                    <h1 class="about_text2" >Result</h1>
-
-                  
-                    <h2 style="padding-bottom: 30px;">
-                        You are almost <b>" {{ age }} "</b> years old <br>
-                        You look  <b>" {{ emotion }} "</b> <br>
-                        You are a <b>" {{ gender }} "</b> <br>
-                        <!-- Your Racial classification is <b>"{{ race }} "</b> <br> -->
-                    </h2>
+                    <h2></h2>
+                    <div id="loader" class="loader"  ></div>
+                    <p class="website_text" style="padding-top: 1px; padding-bottom: 35px; font-size: 40px; ">   Prediction Result  </p>
+                
+                    <form runat="server">
+                        <div class="col-lg-6" style="float:none;margin:auto;">
+                        <h2 style=" text-align: center;">
+                            age :  <b> {{ age }} </b> <br>
+                            <!-- emotion :  <b> {{ emotion }} </b> <br> -->
+                            gender : <b> {{ gender }} </b> <br>
+                        </h2>
                     
-                    <h3> </h3>
-                    <h4> </h4>
-                    <h5> </h5>
-                    <h6> </h6>                  
-                    <div class="container">
-                      <div class="bg_main" style="text-align: left;"><img src="{{ image_link }}" , width="300px"></div>
-                    </div>
-              </div>
+                        <img src="{{ image_link }}" style="width: 500px;">
+                        </div>
+                    </form>           
+
+                </div>
             </div>
-          </div>
+        </div>       
     </section>
+
+
+
+    <script>src="static/js/bootstrap.js"
+        document.getElementById("loader").style.display ="none";
+        function openTest() {
+            document.getElementById("loader").style.display = "block";
+        }
+        document.getElementById('upload-submit').addEventListener('click', openTest);
+    </script>
+
 
     <script>src="static/js/bootstrap.js"</script>
 </body>

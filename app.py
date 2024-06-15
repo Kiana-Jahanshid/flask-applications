@@ -1,12 +1,11 @@
 import os
-os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+# os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 import cv2.data
 from flask import Flask , render_template , request, redirect,session , url_for , make_response
 import cv2
-#from deepface import DeepFace
 import asyncio
+import dlib
 
-# from gevent.pywsgi import WSGIServer
 
 
 app =Flask("face analysis")
@@ -17,7 +16,6 @@ app.config["ALLOWED_EXTENSIONS"] = {"png" , "jpg" , "jpeg"}
 # app.config["FLASK_APP"] = "app.py"
 # app.config["FLASK_ENV"]="development"
 
-#face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
 
 def auth(email , password):
@@ -29,6 +27,84 @@ def auth(email , password):
 
 def allowed_files(filename):
     return True
+
+
+def predictor(upload_path):
+    img = cv2.imread(upload_path) 
+    frame = img.copy() 
+
+    # ------------ Model for Age detection --------# 
+    age_weights = "models/age_deploy.prototxt"
+    age_config = "models/age_net.caffemodel"
+    genderProto="models/gender_deploy.prototxt"
+    genderModel="models/gender_net.caffemodel"
+    faceProto="models/opencv_face_detector.pbtxt"
+    faceModel="models/opencv_face_detector_uint8.pb"
+
+
+    age_Net = cv2.dnn.readNet(age_config, age_weights) 
+    faceNet=cv2.dnn.readNet(faceModel,faceProto)
+    genderNet=cv2.dnn.readNet(genderModel,genderProto)
+
+    ageList = ['(0-2)', '(4-6)', '(8-12)', '(15-20)', '(25-32)', '(38-43)', '(48-53)', '(60-100)'] 
+    genderList=['Male','Female']
+
+    model_mean = (78.4263377603, 87.7689143744, 114.895847746) 
+
+    fH = img.shape[0] 
+    fW = img.shape[1] 
+    Boxes = [] # to store the face co-ordinates 
+    mssg = 'Face Detected' # to display on image 
+
+    # ------------- Model for face detection---------# 
+    face_detector = dlib.get_frontal_face_detector() 
+    # converting to grayscale 
+    img_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) 
+
+    faces = face_detector(img_gray) 
+    if not faces: 
+        mssg = 'No face detected'
+        cv2.putText(img, f'{mssg}', (40, 40), 
+                    cv2.FONT_HERSHEY_SIMPLEX, 2, (200), 2) 
+        cv2.imshow('Age detected', img) 
+        cv2.waitKey(0) 
+        
+    else: 
+        # --------- Bounding Face ---------# 
+        for face in faces: 
+            x = face.left() # extracting the face coordinates 
+            y = face.top() 
+            x2 = face.right() 
+            y2 = face.bottom() 
+
+            # rescaling those coordinates for our image 
+            box = [x, y, x2, y2] 
+            Boxes.append(box) 
+            cv2.rectangle(frame, (x, y), (x2, y2), 
+                        (00, 200, 200), 2) 
+
+        for box in Boxes: 
+            face = frame[box[1]:box[3], box[0]:box[2]] 
+
+            # ----- Image preprocessing --------# 
+            blob = cv2.dnn.blobFromImage(face, 1.0, (227, 227), model_mean, swapRB=False) 
+
+            # -------Age Prediction---------# 
+            age_Net.setInput(blob) 
+            age_preds = age_Net.forward() 
+            age = ageList[age_preds[0].argmax()] 
+            print(f'age: {age}')
+            
+            genderNet.setInput(blob)
+            genderPreds=genderNet.forward()
+            gender=genderList[genderPreds[0].argmax()]
+            print(f'Gender: {gender}')
+
+            cv2.putText(frame, f'{gender} , age:{age}', (box[0], box[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 255), 2, cv2.LINE_AA) 
+            cv2.imwrite("output.jpg", frame)
+            return frame , age  , gender
+
+
 
 
 
@@ -79,19 +155,12 @@ def upload() :
                     upload_path  = str(upload_path)  
                     print(upload_path) 
                     image = cv2.imread(filename=upload_path)
-                    #image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)                
-                    #result = DeepFace.analyze(upload_path ,actions=["age" , "emotion", "gender" ] , enforce_detection=False)
-                    
-                    #await asyncio.sleep(11)
-                    #age = result[0]["age"]
-                    #emotion = result[0]["dominant_emotion"]
-                    #gender = result[0]["dominant_gender"]
-                    #race = result[0]["dominant_race"]
+
+                    final_image , age , gender =  predictor(upload_path)
 
                     save_path = os.path.join("static/uploads/", user_image.filename)
-                    cv2.imwrite(save_path, image)
-                    print(user_image.filename)
-                    result = make_response(render_template("upload.html" ,image_link= save_path ,  age="45" , emotion="sad" , gender="man" ))
+                    cv2.imwrite(save_path, final_image)
+                    result = make_response(render_template("result.html" ,image_link= save_path ,  age=age , gender=gender))
                     return result
 
         
