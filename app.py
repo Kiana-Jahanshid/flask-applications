@@ -3,7 +3,7 @@ os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 import cv2.data
 from flask import Flask , render_template , request, redirect,session , url_for , make_response
 import cv2
-from deepface import DeepFace
+#from deepface import DeepFace
 import asyncio
 
 # from gevent.pywsgi import WSGIServer
@@ -91,7 +91,7 @@ def upload() :
                     save_path = os.path.join("static/uploads/", user_image.filename)
                     cv2.imwrite(save_path, image)
                     print(user_image.filename)
-                    result = make_response(render_template("upload.html" ,image_link= save_path ,  age=age , emotion=emotion , gender=gender ))
+                    result = make_response(render_template("upload.html" ,image_link= save_path ,  age="45" , emotion="sad" , gender="man" ))
                     return result
 
         
