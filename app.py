@@ -3,7 +3,7 @@ os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 import cv2.data
 from flask import Flask , render_template , request, redirect,session , url_for , make_response
 import cv2
-#from deepface import DeepFace
+from deepface import DeepFace
 import asyncio
 
 # from gevent.pywsgi import WSGIServer
@@ -62,7 +62,7 @@ def login():
 # get : for showing upload page to user
 # post : when uploading an image
 @app.route("/upload" , methods=["GET" ,"POST"])
-def upload() :
+async def upload() :
     if request.method == "GET" :
         return make_response(render_template("upload.html"))
 
@@ -80,18 +80,18 @@ def upload() :
                     print(upload_path) 
                     image = cv2.imread(filename=upload_path)
                     #image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)                
-                    #result = DeepFace.analyze(upload_path ,actions=["age" , "emotion", "gender" ] , enforce_detection=False)
+                    result = DeepFace.analyze(upload_path ,actions=["age" , "emotion", "gender" ] , enforce_detection=False)
                     
-                    #await asyncio.sleep(11)
-                    #age = result[0]["age"]
-                    #emotion = result[0]["dominant_emotion"]
-                    #gender = result[0]["dominant_gender"]
+                    await asyncio.sleep(11)
+                    age = result[0]["age"]
+                    emotion = result[0]["dominant_emotion"]
+                    gender = result[0]["dominant_gender"]
                     #race = result[0]["dominant_race"]
 
                     save_path = os.path.join("static/uploads/", user_image.filename)
                     cv2.imwrite(save_path, image)
                     print(user_image.filename)
-                    result = make_response(render_template("upload.html" ,image_link= save_path ,  age="45" , emotion="sad" , gender="man" ))
+                    result = make_response(render_template("upload.html" ,image_link= save_path ,  age=age , emotion=emotion , gender=gender ))
                     return result
 
         
