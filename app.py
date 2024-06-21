@@ -1,14 +1,16 @@
 import os
-# os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 import cv2.data
 from flask import Flask , render_template , request, redirect,session , url_for , make_response
 import cv2
 import asyncio
-import dlib
+# import dlib
 from sqlmodel import Field , SQLModel ,Session , select , create_engine
 from pydantic import BaseModel
 from ultralytics import YOLO
 import bcrypt
+from deepface import DeepFace
+import asgiref
 
 # we used pydantic to """ check user information validation automatically""" 
 # without pydantic we had to use lots of if condition to check them .
@@ -43,8 +45,7 @@ class User(SQLModel , table=True):
 
 
 
-global flag 
-flag = False
+
 app =Flask("face analysis")
 app.config["UPLOAD_FOLDER"] = "static/uploads/" # folder which uploaded file will be saved in
 app.config["ALLOWED_EXTENSIONS"] = {"png" , "jpg" , "jpeg"}
@@ -67,7 +68,7 @@ def allowed_files(filename):
     return True
 
 
-def predictor(upload_path):
+# def predictor(upload_path):
     img = cv2.imread(upload_path) 
     frame = img.copy() 
 
@@ -219,7 +220,7 @@ def logout():
 
 
 @app.route("/upload" , methods=["GET" ,"POST"])
-def upload() :
+async def upload() :
     if request.method == "GET" :
         return make_response(render_template("upload.html"))
     elif request.method == "POST" :
@@ -233,10 +234,14 @@ def upload() :
                     user_image.save(upload_path) # save image in this path
                     upload_path  = str(upload_path)  
                     print(upload_path) 
-                    image = cv2.imread(filename=upload_path)
-                    final_image , age =  predictor(upload_path)
+                    img = cv2.imread(upload_path)
+                    # final_image , age =  predictor(upload_path)
+                    result = DeepFace.analyze(img_path = img, actions = ['age'] ,  enforce_detection=False, silent=True)
+                    asyncio.sleep(13)
+                    age = result[0]['age']
+                    
                     save_path = os.path.join("static/uploads/", user_image.filename)
-                    cv2.imwrite(save_path, final_image)              
+                    cv2.imwrite(save_path, img)              
                     result = make_response(render_template("result.html" ,image_link= save_path ,  age=age ))
                     return result
 

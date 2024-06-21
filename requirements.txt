@@ -1,8 +1,10 @@
 Flask
 opencv-python
 cmake
-dlib
+deepface
 sqlmodel
 bcrypt
 ultralytics
 pydantic
+asgiref
+werkzeug
