@@ -1,5 +1,14 @@
 import os
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+# os.environ['MPLCONFIGDIR'] = "/root" + "/.configs/"
+if 'MPLCONFIGDIR' not in os.environ or os.environ['MPLCONFIGDIR'].startswith('/root'):
+    import tempfile
+    os.environ['MPLCONFIGDIR'] = tempfile.mkdtemp()
+
+if 'YOLO_CONFIG_DIR' not in os.environ or os.environ['YOLO_CONFIG_DIR'].startswith('/root/.config'):
+
+    os.environ["YOLO_CONFIG_DIR"] = tempfile.mkdtemp()
+
 import cv2.data
 from flask import Flask , render_template , request, redirect,session , url_for , make_response
 import cv2
@@ -10,7 +19,11 @@ from pydantic import BaseModel
 from ultralytics import YOLO
 import bcrypt
 from deepface import DeepFace
-import asgiref
+# from quart import redirect, request, url_for ,Quart
+
+
+# import asgiref
+# from celery import Celery
 
 # we used pydantic to """ check user information validation automatically""" 
 # without pydantic we had to use lots of if condition to check them .
@@ -236,14 +249,14 @@ async def upload() :
                     print(upload_path) 
                     img = cv2.imread(upload_path)
                     # final_image , age =  predictor(upload_path)
-                    result = DeepFace.analyze(img_path = img, actions = ['age'] ,  enforce_detection=False, silent=True)
-                    await asyncio.sleep(13)
+                    result = await DeepFace.analyze(img_path = img, actions = ['age'] ,  enforce_detection=False, silent=True)
+                    await asyncio.sleep(5)
                     age = result[0]['age']
                     
                     save_path = os.path.join("static/uploads/", user_image.filename)
                     cv2.imwrite(save_path, img)              
                     result = make_response(render_template("result.html" ,image_link= save_path ,  age=age ))
-                    return result
+                    return await result
 
 
 
