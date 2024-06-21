@@ -1,6 +1,8 @@
 Flask
 opencv-python
-psycopg2-binary
-asgiref
 cmake
 dlib
+sqlmodel
+bcrypt
+ultralytics
+pydantic

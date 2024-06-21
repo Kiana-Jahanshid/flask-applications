@@ -211,7 +211,7 @@ button {
 }
 
 .layout_padding {
-     padding-top: 90px;
+     padding-top: 70px;
      padding-bottom: 0px;
 }
 
@@ -239,10 +239,10 @@ button {
 
 .banner_section{
      width: 100%;
-     float: left;
-     background-image: url(../images/banner.jpg);
+     float: center;
+     background-image: url(../images/banner-bg.png);
      height:fit-content;
-     padding-bottom: 160px;
+     padding-bottom: 250px;
      height:max-content;
      background-position: center;
      background-repeat: no-repeat;
@@ -265,12 +265,12 @@ button {
 
 .banner_taital{
      width: 100%;
-     float: left;
-     font-size: 50px;
+     float: center;
+     font-size: 42px;
      color: #fdfdfe;
-     padding-top: 80px;
-     text-align: left;
-     padding-bottom: 20px;
+     padding-top: 50px;
+     text-align: center;
+     padding-bottom: 80px;
      font-family: 'Poppins', sans-serif;
 
 }
@@ -285,13 +285,13 @@ button {
 
 .free_text {
      width: 60%;
-     float: left;
+     float: center;
      font-size: 27px;
      color: #fdfdfe;
-     text-align: left;
+     text-align: center;
      font-weight: 500;
      font-family: 'Poppins', sans-serif;
-     padding-bottom: 90px;
+     padding-bottom: 80px;
 }
 
 .read_bt{
@@ -345,8 +345,8 @@ button {
 .about_text {
     width: 100%;
     float: left;
-    font-size: 40px;
-    color: #282828;
+    font-size: 36px;
+    color: #ca44fe;
     text-align: center;
     font-weight: bold;
     text-transform: uppercase;
@@ -424,8 +424,8 @@ button {
     float: left;
     background-color: #fcf8fe;
     height: auto;
-    margin-top: 1px;
-    padding-bottom: 90px;
+    margin-top: 0px;
+    padding-bottom: 60px;
 }
 
 .ipsum_text {
@@ -439,7 +439,7 @@ button {
 .service_section_2{
      width: 100%;
      float: left;
-     padding-top: 40px;
+     padding-top: 35px;
 }
 
 .icon_1{
@@ -937,11 +937,11 @@ a,a:hover{
 }
 .myform-area .form-area{
   position: relative;
-  background: rgba(103,58,183,0.7);
+  background: #9262b9; /*rgba(103,58,183,0.7);*/
   width: 100%;
   height: 400px;
   overflow: hidden;
-  box-shadow: 0 0 40px 0 #e1e1e1;
+  /* box-shadow: 0 0 40px 0 #e1e1e1; */
 }
 
 .myform-area .form-area .form-content,
@@ -951,6 +951,7 @@ a,a:hover{
     height: 100%;
     float: left;
     box-sizing: border-box;
+    
 }
 
 .myform-area .form-area .form-content{
@@ -977,20 +978,22 @@ a,a:hover{
 }
 
 .myform-area .form-area .form-input{
-  background-color: white;/*ok*/
+  background-color: white;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 0 40px 0 #05e9f9;
+  box-shadow: 0 0 40px 0 #ffffff;
+  border-radius: 33px;
 }
 .myform-area .form-area .form-input{
     width: 50%;
-    background: #fff; /*ok*/
+    background: #fff; 
     padding: 40px 30px;
 }
 
 .myform-area .form-area .form-input h2{
   margin-bottom: 20px;
     color: #07315B;
+    font-size: 29px;
 }
 
 .myform-area .form-area .form-input input{
@@ -1055,6 +1058,8 @@ a,a:hover{
 .myform-area .form-area .myform-button{
     margin-top: 40px;    
     padding-top: 10px;
+    padding-bottom: 20px;
+    margin-bottom: 30px;
 }
 .myform-area .form-area .myform-button .myform-btn{
     width: 100%;
@@ -1068,14 +1073,14 @@ a,a:hover{
     -webkit-transition: all .5s;
     -o-transition: all .5s;
     transition: all .5s;
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
 .myform-area .form-area .myform-button .myform-btn2{
      width: 100%;
      height: 50px;
-     font-size: 17px;
-     background:#fff ;
+     font-size: 19px;
+     background:#e0a8fe ;
      border: none;
      border-radius: 50px;
      color: rgba(103,58,183);
@@ -1083,7 +1088,9 @@ a,a:hover{
      -webkit-transition: all .5s;
      -o-transition: all .5s;
      transition: all .5s;
-     
+     box-shadow: 0 0 10px 0 #e6b9ff;
+     margin-top: 20px;
+     margin-bottom: 30px;
  }
 .myform-area .form-area .myform-button .myform-btn:hover{
     background: #07315B;
@@ -1108,7 +1115,7 @@ a,a:hover{
 .myform-area .form-area .form-input1{
     position: relative;
     width: 50%;
-    height: 100%;
+    height: 160%;
     float: left;
     box-sizing: border-box;
 }
@@ -1116,24 +1123,29 @@ a,a:hover{
   background-color: rgba(103,58,183);
   position: relative;
   overflow: hidden;
-  box-shadow: 0 0 40px 0 rgba(103,58,183);
+  box-shadow: 0 30px 40px 0 rgb(218, 200, 250);
+  border-radius: 33px;
 }
 .myform-area .form-area .form-input1{
     width: 50%;
     background: rgba(103,58,183);
     padding: 40px 30px;
+    height: 3500px;
 }
-.myform-area .form-area .form-input1 h2{
+.myform-area .form-area .form-input1 h1{
   margin-bottom: 20px;
     color: #fff;
+    font-weight: 500;
+    font-size: 35px;
 }
 .myform-area .form-area .form-input1 input{
     position: relative;
-    height: 40px;
+    height: 25px;
     padding: 20px 0;
+    /* border-radius: 20px; */
 }
 .myform-area .form-area .form-input1 textarea{
-    height: 120px;
+    height: 20px;
     padding: 20px 0;
 }
 .myform-area .form-area .form-input1 input,
@@ -1143,8 +1155,8 @@ a,a:hover{
     box-sizing: border-box;
     outline: none;
     border: none;
-    border-bottom: 2px solid #e1e1e1; /*ok */
-    color: #ffffff; /*ok*/
+    border-bottom: 3px solid #e1e1e1; 
+    color: #393939; 
 }
 .myform-area .form-area .form-input1 form .form-group{
     position: relative;
@@ -1158,7 +1170,7 @@ a,a:hover{
     left: 0;
     pointer-events: none;
     font-size: 14px;
-    color: rgba(103,58,183);/*ok*/
+    color: rgba(103,58,183);
     margin-bottom: 0;
     transition: all .6s;
 }
@@ -1171,14 +1183,14 @@ a,a:hover{
     left: 0;
     color: #ff0000;
     font-size: 12px;
-    color: #ffffff; /*ok*/
+    color: #ffffff; 
     font-weight: bold;
 }
 .myform-area .form-area .form-input1 input:focus,
 .myform-area .form-area .form-input1 textarea:focus,
 .myform-area .form-area .form-input1 input:valid,
 .myform-area .form-area .form-input1 textarea:valid{
-    border-bottom: 2px solid #fff;/*ok*/
+    border-bottom: 2px solid #fff;
 }
 
 

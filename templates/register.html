@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+
+
+{% block title %}
+    register
+{% endblock %}
+
+
+{% block content %}
+
+  <section class="myform-area" style="height:800px;  padding-bottom: 820px; padding-top:50px; margin-bottom:60px">
+    <div class="container"  >
+        <div class="row justify-content-center" >
+            <div class="col-lg-12" >
+                <div class="form-area login-form " style="padding-left: 350px; height:800px; padding-top:10px;">
+
+                    <div class="form-input1">
+                      <h1>SignUp</h1>
+                      <form method="POST">
+                        <div class="form-group">
+                          <input type="text" id="" name="firstname" required>
+                          <label>Firstname</label>
+                        </div>
+                        <div class="form-group">
+                          <input type="text" id="" name="lastname" required>
+                          <label>Lastname</label>
+                        </div>
+                        <div class="form-group">
+                          <input type="text" id="" name="username" required>
+                          <label>username</label>
+                        </div> 
+                        <div class="form-group">
+                          <input type="text" id="" name="age" required>
+                          <label>Age</label>
+                        </div>  
+                        <div class="form-group">
+                          <input type="email" id="" name="email" required>
+                          <label>Email</label>
+                        </div>                     
+                        <div class="form-group">
+                          <input type="text"  id="" name="city" required>
+                          <label>city</label>
+                        </div>
+                        <div class="form-group">
+                          <input type="text" id="" name="country" required>
+                          <label>Country</label>
+                        </div>
+                        <div class="form-group">
+                          <input type="password" id="" name="password" required>
+                          <label>password</label>
+                        </div>
+                        <div class="form-group">
+                          <input type="password" id="" name="confirm_password" required>
+                          <label>Confirm Password</label>
+                        </div>
+                        <div class="myform-button">
+                          <button class="myform-btn2">Submit</button>
+                        </div>
+                      </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+{% endblock %}
