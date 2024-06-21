@@ -7,4 +7,3 @@ bcrypt
 ultralytics
 pydantic
 asgiref
-werkzeug
