@@ -237,7 +237,7 @@ async def upload() :
                     img = cv2.imread(upload_path)
                     # final_image , age =  predictor(upload_path)
                     result = DeepFace.analyze(img_path = img, actions = ['age'] ,  enforce_detection=False, silent=True)
-                    asyncio.sleep(13)
+                    await asyncio.sleep(13)
                     age = result[0]['age']
                     
                     save_path = os.path.join("static/uploads/", user_image.filename)

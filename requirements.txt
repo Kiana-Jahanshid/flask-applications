@@ -1,10 +1,9 @@
 Flask
 opencv-python
-cmake
 deepface
 sqlmodel
 bcrypt
 ultralytics
 pydantic
-asgiref
 tf-keras
+psycopg2-binary
