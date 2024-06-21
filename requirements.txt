@@ -7,3 +7,4 @@ bcrypt
 ultralytics
 pydantic
 asgiref
+tf-keras
