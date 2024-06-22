@@ -3,23 +3,6 @@
       {
         "name": "flask-disk1",
         "mountTo": "static/uploads"
-      },
-      {
-        "name": "disk2",
-        "mountTo": "root/.config/Ultralytics"
-      },
-      {
-        "name": "disk4",
-        "mountTo": "root/.config/matplotlib"
-      },
-      {
-        "name": "disk3",
-        "mountTo": "root/.deepface"
-      },
-      {
-        "name": "disk5",
-        "mountTo": "root"
       }
-
     ]
 }
