@@ -1,33 +1,31 @@
-import os
+import os    
+import tempfile
+os.environ['MPLCONFIGDIR'] = tempfile.mkdtemp()
+os.environ["YOLO_CONFIG_DIR"] = tempfile.mkdtemp()
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 # os.environ['MPLCONFIGDIR'] = "/root" + "/.configs/"
-if 'MPLCONFIGDIR' not in os.environ or os.environ['MPLCONFIGDIR'].startswith('/root'):
-    import tempfile
-    os.environ['MPLCONFIGDIR'] = tempfile.mkdtemp()
+# if 'MPLCONFIGDIR' not in os.environ or os.environ['MPLCONFIGDIR'].startswith('/root'):
+    
 
-if 'YOLO_CONFIG_DIR' not in os.environ or os.environ['YOLO_CONFIG_DIR'].startswith('/root/.config'):
+# if 'YOLO_CONFIG_DIR' not in os.environ or os.environ['YOLO_CONFIG_DIR'].startswith('/root/.config'):
+    
 
-    os.environ["YOLO_CONFIG_DIR"] = tempfile.mkdtemp()
-
-import cv2.data
-from flask import Flask , render_template , request, redirect,session , url_for , make_response
+from quart import Quart , render_template , request, redirect,session , url_for 
+from quart.helpers import make_response 
 import cv2
 import asyncio
-# import dlib
 from sqlmodel import Field , SQLModel ,Session , select , create_engine
 from pydantic import BaseModel
 from ultralytics import YOLO
 import bcrypt
 from deepface import DeepFace
+
 # from quart import redirect, request, url_for ,Quart
-
-
 # import asgiref
 # from celery import Celery
 
 # we used pydantic to """ check user information validation automatically""" 
-# without pydantic we had to use lots of if condition to check them .
-# pydantic models are used for validating user data
+
 class RegisterModel(BaseModel):
     username : str 
     password : str
@@ -59,10 +57,10 @@ class User(SQLModel , table=True):
 
 
 
-app =Flask("face analysis")
+app =Quart("face analysis")
 app.config["UPLOAD_FOLDER"] = "static/uploads/" # folder which uploaded file will be saved in
 app.config["ALLOWED_EXTENSIONS"] = {"png" , "jpg" , "jpeg"}
-app.secret_key = "me_secret"
+app.secret_key = "my_secret"
 
 engine = create_engine(url="sqlite:///./database.db" , echo=True)
 SQLModel.metadata.create_all(engine)
@@ -149,24 +147,24 @@ def allowed_files(filename):
 
 
 @app.route("/" , methods=["GET"])
-def main_page():
-    return render_template("index.html")
+async def main_page():
+    return await render_template("index.html")
 
 
 @app.route("/register" , methods=["GET","POST"])
-def register():
+async def register():
     if request.method == "GET" :
-        return render_template("register.html")
+        return await render_template("register.html")
     elif request.method == "POST" :
         try:
-            register_data = RegisterModel(username=request.form["username"] ,password=request.form['password'] , city=request.form["city"]  ,country=request.form["country"] , first_name=request.form["firstname"] , last_name=request.form["lastname"] , email=request.form["email"] , age=request.form["age"] , confirm_password=request.form["confirm_password"])#validating attributes type
-            print(request.form["username"])
+            register_data = RegisterModel(username=(await request.form)["username"] ,password=(await request.form)['password'] , city=(await request.form)["city"]  ,country=(await request.form)["country"] , first_name=(await request.form)["firstname"] , last_name=(await request.form)["lastname"] , email=(await request.form)["email"] , age=(await request.form)["age"] , confirm_password=(await request.form)["confirm_password"])#validating attributes type
+            print((await request.form)["username"])
         except:
             print("type error")
             return redirect(url_for("register"))
         if register_data.confirm_password == register_data.password :
             with Session(engine) as db_session : # READ DATABASEcheck and check if entered username exists
-                query = select(User).where(User.username == request.form["username"]) # or register_data.username
+                query = select(User).where(User.username == (await request.form)["username"]) # or register_data.username
                 result = db_session.exec(query).first()
             if not result :
                 print(register_data.password)
@@ -175,35 +173,35 @@ def register():
                 print(hashed_password)
 
                 with Session(engine) as db_session :#WRITE TO DATABASE
-                    new_user = User(username=request.form["username"] ,password=hashed_password  , city=request.form["city"] ,country=request.form["country"] , first_name=request.form["firstname"] , last_name=request.form["lastname"] , email=request.form["email"] , age=request.form["age"]  ) # create a user object
+                    new_user = User(username=(await request.form)["username"] ,password=hashed_password  , city=(await request.form)["city"] ,country=(await request.form)["country"] , first_name=(await request.form)["firstname"] , last_name=(await request.form)["lastname"] , email=(await request.form)["email"] , age=(await request.form)["age"]  ) # create a user object
                     db_session.add(new_user) # adding this object to database
                     db_session.commit()
                     db_session.refresh(new_user)
                     print("your registration compleated successfully🎉")
-                    return redirect(url_for("login"))
+                    return  redirect(url_for("login"))
             else:
                 print("This username is already taken , choose another one")
-                return redirect(url_for("register"))
+                return  redirect(url_for("register"))
         else :
             print("confirm password doesnt match with password , try again ... ")
-            return redirect(url_for("register"))
+            return  redirect(url_for("register"))
 
 
 
 @app.route("/login" , methods=["GET" , "POST"]) 
-def login():
+async def login():
     if request.method == "GET" :
-        return render_template("login.html")
+        return await render_template("login.html")
     elif request.method == "POST" : 
         try :            
-            register_login_data = LoginModel(username=request.form["username"] , password=request.form["password"] , confirm_password=request.form["confirm_password"])# if email & pass types are correct , user will be navigated to upload page
+            register_login_data = LoginModel(username=(await request.form)["username"] , password=(await request.form)["password"] , confirm_password=(await request.form)["confirm_password"])# if email & pass types are correct , user will be navigated to upload page
         except:
             print("type error")
-            return redirect(url_for("login"))
+            return await redirect(url_for("login"))
         with Session(engine) as db_session :
             query = select(User).where(User.username == register_login_data.username ) #    User.password == register_login_data.password)
             result = db_session.exec(query).first()
-        if request.form["confirm_password"] == request.form["password"] :
+        if (await request.form)["confirm_password"] == (await request.form)["password"] :
             
             if result :
                 #check if username exists
@@ -226,7 +224,7 @@ def login():
 
 
 @app.route("/logout" , methods=["GET"])
-def logout():
+async def logout():
         session.pop("username")
         print("YOU LOGGED OUT ")    
         return redirect(url_for("main_page"))
@@ -235,12 +233,12 @@ def logout():
 @app.route("/upload" , methods=["GET" ,"POST"])
 async def upload() :
     if request.method == "GET" :
-        return make_response(render_template("upload.html"))
+        return await render_template("upload.html")
     elif request.method == "POST" :
-            user_image = request.files["image"] # name of input tag was image in login file # uploaded file is in  ( request.files() )
+            user_image = (await request.files)["image"] # name of input tag was image in login file # uploaded file is in  ( request.files() )
             # check if file is uploaded correctly
             if user_image.filename == "" :
-                return make_response(render_template("upload.html"))#redirect(url_for("upload"))
+                return await render_template("upload.html")#redirect(url_for("upload"))
             else :
                 if user_image  and  allowed_files(user_image.filename): # if image is not null , and check file postfix
                     upload_path = os.path.join(app.config["UPLOAD_FOLDER"] , user_image.filename)
@@ -249,49 +247,48 @@ async def upload() :
                     print(upload_path) 
                     img = cv2.imread(upload_path)
                     # final_image , age =  predictor(upload_path)
-                    result = await DeepFace.analyze(img_path = img, actions = ['age'] ,  enforce_detection=False, silent=True)
-                    await asyncio.sleep(5)
+                    result = DeepFace.analyze(img_path = img, actions = ['age'] ,  enforce_detection=False, silent=True)
+                    await asyncio.sleep(1)
                     age = result[0]['age']
                     
                     save_path = os.path.join("static/uploads/", user_image.filename)
                     cv2.imwrite(save_path, img)              
-                    result = make_response(render_template("result.html" ,image_link= save_path ,  age=age ))
-                    return await result
+                    result = await render_template("result.html" ,image_link= save_path ,  age=age )
+                    return result
 
 
 
 @app.route("/bmr" , methods=["GET" , "POST"])
-def bmr_calc():
+async def bmr_calc():
     if request.method == "GET" :
-        return render_template("bmr.html")
-
+        return await render_template("bmr.html")
     else :
-        age = float( request.form["age"])
-        weight = float( request.form["weight"])
-        height = float( request.form["height"])
-        gender = request.form["gender"]
+        age = (await request.form)["age"]
+        weight = (await request.form)["weight"]
+        height = (await request.form)["height"]
+        gender =  (await request.form)["gender"]
         print(age , weight , height , gender)
 
         if gender == "female" or gender == "Female" :
-            bmr_result = (10*weight) + (6.25*height) - (5*age) - 161
+            bmr_result = (10*float(weight)) + (6.25*float(height)) - (5*float(age)) - 161
         
         elif gender == "male" or gender == "Male": 
-            bmr_result = (10*weight) + (6.25*height) - (5*age) + 5
+            bmr_result = (10*float(weight)) + (6.25*float(height)) - (5*float(age)) + 5
 
 
-        return render_template("bmr.html" , bmr_result=bmr_result)
+        return await render_template("bmr.html" , bmr_result=bmr_result)
 
 
 
 @app.route("/image_classification" , methods=["GET" , "POST"])
 async def image_classification():
     if request.method == "GET" : 
-        return make_response(render_template("classification_result.html"))
+        return await render_template("classification_result.html")
     
     elif request.method == "POST":
-        input_image = request.files["image"]
+        input_image = (await request.files)["image"]
         if input_image.filename == "" :
-            return make_response(render_template("classification_result.html"))
+            return await render_template("classification_result.html")
         elif input_image and allowed_files(input_image.filename):
             path = os.path.join(app.config["UPLOAD_FOLDER"] , input_image.filename)
             input_image.save(path)
@@ -304,7 +301,6 @@ async def image_classification():
             result = results[0]
             print(result)                
             box = result.boxes[0]
-            output = []
             for box in result.boxes:
                 class_id = result.names[box.cls[0].item()]
                 cords = box.xyxy[0].tolist()
@@ -322,7 +318,7 @@ async def image_classification():
             cv2.rectangle(saved_image, (cords[1], cords[0]), (cords[2], cords[3]), (100, 0, 250), 2)
             result_path = os.path.join("static/uploads/", "final_classified_image.jpg")
             cv2.imwrite( result_path , saved_image )
-            return make_response(render_template("classification_result.html" , image_link=result_path))
+            return await render_template("classification_result.html" , image_link=result_path)
 
 
 
