@@ -13,9 +13,9 @@ RUN pip install -r requirements.txt
 
 # Copy app code and set working directory
 COPY . .
-EXPOSE 8000
+# EXPOSE 8000
 # ENV FLASK_APP=app.py
 # Run
 # CMD ["quart", "run", "--port=5000", "--host=0.0.0.0"]
 #CMD [ "python", "-m" , "flask", "run", "--host=0.0.0.0"]
-CMD ["hypercorn", "app:app", "--port=8000", "--host=0.0.0.0"]
+CMD ["hypercorn", "app:app"]
