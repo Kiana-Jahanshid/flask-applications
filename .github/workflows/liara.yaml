@@ -17,5 +17,5 @@ jobs:
           LIARA_TOKEN: ${{ secrets.LIARA_API_TOKEN }}
         run: |
           npm i -g @liara/cli@5
-          liara deploy --app="flask-app" --api-token="$LIARA_TOKEN" --no-app-logs --port="5000"
+          liara deploy --app="flask-app" --api-token="$LIARA_TOKEN" --no-app-logs --port="8000"
 
