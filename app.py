@@ -4,12 +4,6 @@ os.environ['MPLCONFIGDIR'] = tempfile.mkdtemp()
 os.environ["YOLO_CONFIG_DIR"] = tempfile.mkdtemp()
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 # os.environ['MPLCONFIGDIR'] = "/root" + "/.configs/"
-# if 'MPLCONFIGDIR' not in os.environ or os.environ['MPLCONFIGDIR'].startswith('/root'):
-    
-
-# if 'YOLO_CONFIG_DIR' not in os.environ or os.environ['YOLO_CONFIG_DIR'].startswith('/root/.config'):
-    
-
 from quart import Quart , render_template , request, redirect,session , url_for 
 from quart.helpers import make_response 
 import cv2
@@ -19,12 +13,9 @@ from pydantic import BaseModel
 from ultralytics import YOLO
 import bcrypt
 from deepface import DeepFace
-
-# from quart import redirect, request, url_for ,Quart
 # import asgiref
 # from celery import Celery
 
-# we used pydantic to """ check user information validation automatically""" 
 
 class RegisterModel(BaseModel):
     username : str 

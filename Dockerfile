@@ -16,6 +16,6 @@ COPY . .
 # EXPOSE 5000
 # ENV FLASK_APP=app.py
 # Run
-# CMD ["quart", "run", "--port=5000", "--host=0.0.0.0"]
+CMD ["quart", "run", "--port=5000", "--host=0.0.0.0"]
 # CMD [ "flask", "run" ,"--host=0.0.0.0", "--port=5000"]
-CMD ["hypercorn", "app:app" ]
+# CMD ["hypercorn", "app:app" , "--host=0.0.0.0", "--port=5000"]
