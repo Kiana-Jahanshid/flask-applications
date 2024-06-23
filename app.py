@@ -248,7 +248,7 @@ async def upload() :
                     img = cv2.imread(upload_path)
                     # final_image , age =  predictor(upload_path)
                     result = DeepFace.analyze(img_path = img, actions = ['age'] ,  enforce_detection=False, silent=True)
-                    await asyncio.sleep(1)
+                    # await asyncio.sleep(1)
                     age = result[0]['age']
                     
                     save_path = os.path.join("static/uploads/", user_image.filename)
@@ -312,7 +312,7 @@ async def image_classification():
                 print("Probability:", conf)
                 print(cords[0],cords[1],cords[2],cords[3])
 
-            await asyncio.sleep(2)
+            # await asyncio.sleep(2)
 
             cv2.putText(img=saved_image , text=f"{class_id} : {conf}" , org=(cords[0],cords[1]-10) , fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1.1, color=(100, 0, 250), thickness=2, lineType=cv2.LINE_AA)
             cv2.rectangle(saved_image, (cords[1], cords[0]), (cords[2], cords[3]), (100, 0, 250), 2)
