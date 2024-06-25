@@ -102,7 +102,7 @@ async def register():
                     new_user = User(username=(await request.form)["username"] ,password=hashed_password  , city=(await request.form)["city"] ,country=(await request.form)["country"] , first_name=(await request.form)["firstname"] , last_name=(await request.form)["lastname"] , email=(await request.form)["email"] , age=(await request.form)["age"]  ) # create a user object
                     db_session.add(new_user) # adding this object to database
                     db_session.commit()
-                    db_session.refresh(new_user)
+                    db_session.refresh(new_user) 
                     await flash("Your SignUp compleated successfully 🎉" , "success")
                     return  redirect(url_for("login"))
             else:
