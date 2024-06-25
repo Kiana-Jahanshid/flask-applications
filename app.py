@@ -96,7 +96,7 @@ async def register():
                 print(register_data.password)
                 password_byte = register_data.password.encode("utf-8")
                 hashed_password = bcrypt.hashpw(password_byte , bcrypt.gensalt())
-                print(hashed_password)
+                print(hashed_password) 
 
                 with Session(engine) as db_session :#WRITE TO DATABASE
                     new_user = User(username=(await request.form)["username"] ,password=hashed_password  , city=(await request.form)["city"] ,country=(await request.form)["country"] , first_name=(await request.form)["firstname"] , last_name=(await request.form)["lastname"] , email=(await request.form)["email"] , age=(await request.form)["age"]  ) # create a user object
