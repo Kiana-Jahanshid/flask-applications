@@ -8,6 +8,16 @@
 
 {% block content %}
 
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category , message in messages %}
+                <h4 class="alert alert-{{ category }}" role="alert" style="padding-top:30px; padding-bottom:10px;">
+                    {{ message }}
+                </h4>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
     <section class="myform-area">
         <div class="container">
             <div class="row justify-content-center">

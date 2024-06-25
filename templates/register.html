@@ -8,6 +8,18 @@
 
 {% block content %}
 
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+	{% if messages %}
+		{% for category , message in messages %}
+			<div class="alert alert-{{ category }}" role="alert" style="padding-top:30px; padding-bottom:10px;">
+				{{ message }}
+			</div>
+		{% endfor %}
+	{% endif %}
+{% endwith %}
+
+
   <section class="myform-area" style="height:800px;  padding-bottom: 820px; padding-top:50px; margin-bottom:60px">
     <div class="container"  >
         <div class="row justify-content-center" >
@@ -56,6 +68,17 @@
                         <div class="myform-button">
                           <button class="myform-btn2">Submit</button>
                         </div>
+
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                          {% if messages %}
+                            {% for category , message in messages %}
+                              <h4 class="alert alert-{{ category }}" role="alert" style="padding-top:20px;">
+                                {{ message }}
+                              </h4>
+                            {% endfor %}
+                          {% endif %}
+                        {% endwith %}
+
                       </form>
                     </div>
                 </div>

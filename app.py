@@ -4,7 +4,7 @@ os.environ['MPLCONFIGDIR'] = tempfile.mkdtemp()
 os.environ["YOLO_CONFIG_DIR"] = tempfile.mkdtemp()
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 # os.environ['MPLCONFIGDIR'] = "/root" + "/.configs/"
-from quart import Quart , render_template , request, redirect,session , url_for 
+from quart import Quart , render_template , request, redirect,session as quart_session , url_for , flash
 from quart.helpers import make_response 
 import cv2
 import asyncio
@@ -70,71 +70,6 @@ def allowed_files(filename):
     return True
 
 
-# def predictor(upload_path):
-    img = cv2.imread(upload_path) 
-    frame = img.copy() 
-
-    # ------------ Model for Age detection --------# 
-    age_weights = "models/age_deploy.prototxt"
-    age_config = "models/age_net.caffemodel"
-    # genderProto="models/gender_deploy.prototxt"
-    # genderModel="models/gender_net.caffemodel"
-    # faceProto="models/opencv_face_detector.pbtxt"
-    # faceModel="models/opencv_face_detector_uint8.pb"
-
-    age_Net = cv2.dnn.readNet(age_config, age_weights) 
-    # faceNet=cv2.dnn.readNet(faceModel,faceProto)
-    # genderNet=cv2.dnn.readNet(genderModel,genderProto)
-
-    ageList = ['(0-2)', '(4-6)', '(8-12)', '(15-20)', '(25-32)', '(38-43)', '(48-53)', '(60-100)'] 
-    genderList=['Male','Female']
-    model_mean = (78.4263377603, 87.7689143744, 114.895847746) 
-    fH = img.shape[0] 
-    fW = img.shape[1] 
-    Boxes = [] # to store the face co-ordinates 
-    mssg = 'Face Detected' # to display on image 
-
-    # ------------- Model for face detection---------# 
-    face_detector = dlib.get_frontal_face_detector() 
-    img_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) 
-    faces = face_detector(img_gray) 
-    if not faces: 
-        mssg = 'No face detected'
-        cv2.putText(img, f'{mssg}', (40, 40), cv2.FONT_HERSHEY_SIMPLEX, 2, (200), 2) 
-        cv2.imshow('Age detected', img) 
-        cv2.waitKey(0) 
-    else: 
-        # --------- Bounding Face ---------# 
-        for face in faces: 
-            x = face.left() # extracting face coordinates 
-            y = face.top() 
-            x2 = face.right() 
-            y2 = face.bottom() 
-
-            # rescaling those coordinates 
-            box = [x, y, x2, y2] 
-            Boxes.append(box) 
-            cv2.rectangle(frame, (x, y), (x2, y2), (00, 200, 200), 2) 
-
-        for box in Boxes: 
-            face = frame[box[1]:box[3], box[0]:box[2]] 
-            # ----- Image preprocessing --------# 
-            blob = cv2.dnn.blobFromImage(face, 1.0, (227, 227), model_mean, swapRB=False) 
-            # -------Age Prediction---------# 
-            age_Net.setInput(blob) 
-            age_preds = age_Net.forward() 
-            age = ageList[age_preds[0].argmax()] 
-            print(f'age: {age}')
-            
-            # genderNet.setInput(blob)
-            # genderPreds=genderNet.forward()
-            # gender=genderList[genderPreds[0].argmax()]
-            # print(f'Gender: {gender}')
-
-            cv2.putText(frame, f'age:{age}', (box[0], box[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 255), 2, cv2.LINE_AA) 
-            cv2.imwrite("output.jpg", frame)
-            return frame , age  #, gender
-
 
 
 @app.route("/" , methods=["GET"])
@@ -151,7 +86,7 @@ async def register():
             register_data = RegisterModel(username=(await request.form)["username"] ,password=(await request.form)['password'] , city=(await request.form)["city"]  ,country=(await request.form)["country"] , first_name=(await request.form)["firstname"] , last_name=(await request.form)["lastname"] , email=(await request.form)["email"] , age=(await request.form)["age"] , confirm_password=(await request.form)["confirm_password"])#validating attributes type
             print((await request.form)["username"])
         except:
-            print("type error")
+            await flash("Type Error! One of your input was wrong" , "danger")
             return redirect(url_for("register"))
         if register_data.confirm_password == register_data.password :
             with Session(engine) as db_session : # READ DATABASEcheck and check if entered username exists
@@ -168,13 +103,13 @@ async def register():
                     db_session.add(new_user) # adding this object to database
                     db_session.commit()
                     db_session.refresh(new_user)
-                    print("your registration compleated successfully🎉")
+                    await flash("Your SignUp compleated successfully 🎉" , "success")
                     return  redirect(url_for("login"))
             else:
-                print("This username is already taken , choose another one")
+                await flash("This username is already taken ❌,Choose another one" , "danger")
                 return  redirect(url_for("register"))
         else :
-            print("confirm password doesnt match with password , try again ... ")
+            await flash("Confirm-password doesn't match with password ,Try again..." , "warning")
             return  redirect(url_for("register"))
 
 
@@ -187,130 +122,143 @@ async def login():
         try :            
             register_login_data = LoginModel(username=(await request.form)["username"] , password=(await request.form)["password"] , confirm_password=(await request.form)["confirm_password"])# if email & pass types are correct , user will be navigated to upload page
         except:
-            print("type error")
+            await flash("Type error! ,One of your inputs has a wrong datatype" , "danger")
             return await redirect(url_for("login"))
         with Session(engine) as db_session :
             query = select(User).where(User.username == register_login_data.username ) #    User.password == register_login_data.password)
-            result = db_session.exec(query).first()
+            user = db_session.exec(query).first()
         if (await request.form)["confirm_password"] == (await request.form)["password"] :
             
-            if result :
+            if user :
                 #check if username exists
                 byte_password = register_login_data.password.encode("utf-8")
-                if bcrypt.checkpw(byte_password , result.password):  
+                if bcrypt.checkpw(byte_password , user.password):  
                     # check if password is correct   
-                    session["username"]  =  register_login_data.username
-                    print("you logged in successfully 🎉")
-                    return redirect(url_for("upload")) 
+                    quart_session["username"]  =  register_login_data.username
+                    quart_session["user_id"] = user.id
+                    await flash("You logged in successfully 🎉" , "success")
+                    return redirect(url_for("main_page")) 
+
                 else:
-                    print("password is incorrect")
+                    await flash("Password is incorrect ❌" , "danger")
                     return redirect(url_for("login"))
             else :
-                print("username is incorrect")
+                await flash("Username is incorrect ❌" , "danger")
                 return redirect(url_for("login"))
         else :
-            print("confirm password doesnt match with password , try again ... ")
+            await flash("Confirm-password doesn't match with password ,Try again...", "warning")
             return redirect(url_for("login"))
 
 
 
 @app.route("/logout" , methods=["GET"])
 async def logout():
-        session.pop("username")
-        print("YOU LOGGED OUT ")    
+        quart_session.pop("user_id")
+        await flash("YOU LOGGED OUT " , "success")    
         return redirect(url_for("main_page"))
 
 
 @app.route("/upload" , methods=["GET" ,"POST"])
 async def upload() :
-    if request.method == "GET" :
-        return await render_template("upload.html")
-    elif request.method == "POST" :
-            user_image = (await request.files)["image"] # name of input tag was image in login file # uploaded file is in  ( request.files() )
-            # check if file is uploaded correctly
-            if user_image.filename == "" :
-                return await render_template("upload.html")#redirect(url_for("upload"))
-            else :
-                if user_image  and  allowed_files(user_image.filename): # if image is not null , and check file postfix
-                    upload_path = os.path.join(app.config["UPLOAD_FOLDER"] , user_image.filename)
-                    user_image.save(upload_path) # save image in this path
-                    upload_path  = str(upload_path)  
-                    print(upload_path) 
-                    img = cv2.imread(upload_path)
-                    # final_image , age =  predictor(upload_path)
-                    result = DeepFace.analyze(img_path = img, actions = ['age'] ,  enforce_detection=False, silent=True)
-                    # await asyncio.sleep(1)
-                    age = result[0]['age']
-                    
-                    save_path = os.path.join("static/uploads/", user_image.filename)
-                    cv2.imwrite(save_path, img)              
-                    result = await render_template("result.html" ,image_link= save_path ,  age=age )
-                    return result
+    if quart_session.get("user_id"):
 
+        if request.method == "GET" :
+            return await render_template("upload.html")
+        elif request.method == "POST" :
+                user_image = (await request.files)["image"] # name of input tag was image in login file # uploaded file is in  ( request.files() )
+                # check if file is uploaded correctly
+                if user_image.filename == "" :
+                    return await render_template("upload.html")#redirect(url_for("upload"))
+                else :
+                    if user_image  and  allowed_files(user_image.filename): # if image is not null , and check file postfix
+                        upload_path = os.path.join(app.config["UPLOAD_FOLDER"] , user_image.filename)
+                        user_image.save(upload_path) # save image in this path
+                        upload_path  = str(upload_path)  
+                        print(upload_path) 
+                        img = cv2.imread(upload_path)
+                        # final_image , age =  predictor(upload_path)
+                        result = DeepFace.analyze(img_path = img, actions = ['age'] ,  enforce_detection=False, silent=True)
+                        # await asyncio.sleep(1)
+                        age = result[0]['age']
+                        
+                        save_path = os.path.join("static/uploads/", user_image.filename)
+                        cv2.imwrite(save_path, img)              
+                        result = await render_template("result.html" ,image_link= save_path ,  age=age )
+                        return result
+    else :
+        await flash("First you have to login to use applications ⛔" , "info")
+        return redirect(url_for("login"))
 
 
 @app.route("/bmr" , methods=["GET" , "POST"])
 async def bmr_calc():
-    if request.method == "GET" :
-        return await render_template("bmr.html")
-    else :
-        age = (await request.form)["age"]
-        weight = (await request.form)["weight"]
-        height = (await request.form)["height"]
-        gender =  (await request.form)["gender"]
-        print(age , weight , height , gender)
+    if quart_session.get("user_id"):
 
-        if gender == "female" or gender == "Female" :
-            bmr_result = (10*float(weight)) + (6.25*float(height)) - (5*float(age)) - 161
+        if request.method == "GET" :
+            return await render_template("bmr.html")
+        else :
+            age = (await request.form)["age"]
+            weight = (await request.form)["weight"]
+            height = (await request.form)["height"]
+            gender =  (await request.form)["gender"]
+            print(age , weight , height , gender)
+
+            if gender == "female" or gender == "Female" :
+                bmr_result = (10*float(weight)) + (6.25*float(height)) - (5*float(age)) - 161
+            
+            elif gender == "male" or gender == "Male": 
+                bmr_result = (10*float(weight)) + (6.25*float(height)) - (5*float(age)) + 5
+
+            return await render_template("bmr.html" , bmr_result=bmr_result)
         
-        elif gender == "male" or gender == "Male": 
-            bmr_result = (10*float(weight)) + (6.25*float(height)) - (5*float(age)) + 5
-
-
-        return await render_template("bmr.html" , bmr_result=bmr_result)
-
+    else :
+        await flash("First you have to login to use applications ⛔" , "info")
+        return redirect(url_for("login"))
 
 
 @app.route("/image_classification" , methods=["GET" , "POST"])
 async def image_classification():
-    if request.method == "GET" : 
-        return await render_template("classification_result.html")
-    
-    elif request.method == "POST":
-        input_image = (await request.files)["image"]
-        if input_image.filename == "" :
+    if quart_session.get("user_id"):
+
+        if request.method == "GET" : 
             return await render_template("classification_result.html")
-        elif input_image and allowed_files(input_image.filename):
-            path = os.path.join(app.config["UPLOAD_FOLDER"] , input_image.filename)
-            input_image.save(path)
-            path = str(path)
-            print(str(path))
-            saved_image = cv2.imread(path)
+        elif request.method == "POST":
+            input_image = (await request.files)["image"]
+            if input_image.filename == "" :
+                return await render_template("classification_result.html")
+            elif input_image and allowed_files(input_image.filename):
+                path = os.path.join(app.config["UPLOAD_FOLDER"] , input_image.filename)
+                input_image.save(path)
+                path = str(path)
+                print(str(path))
+                saved_image = cv2.imread(path)
 
-            model = YOLO('models/yolov8n-seg.pt')
-            results = model.predict(path)
-            result = results[0]
-            print(result)                
-            box = result.boxes[0]
-            for box in result.boxes:
-                class_id = result.names[box.cls[0].item()]
-                cords = box.xyxy[0].tolist()
-                cords = [round(x) for x in cords]
-                conf = round(box.conf[0].item(), 2)
-                # output.append([cords, result.names[class_id], conf])
-                print("Object type:", class_id)
-                print("Coordinates:", cords)
-                print("Probability:", conf)
-                print(cords[0],cords[1],cords[2],cords[3])
+                model = YOLO('models/yolov8n-seg.pt')
+                results = model.predict(path)
+                result = results[0]
+                print(result)                
+                box = result.boxes[0]
+                for box in result.boxes:
+                    class_id = result.names[box.cls[0].item()]
+                    cords = box.xyxy[0].tolist()
+                    cords = [round(x) for x in cords]
+                    conf = round(box.conf[0].item(), 2)
+                    # output.append([cords, result.names[class_id], conf])
+                    print("Object type:", class_id)
+                    print("Coordinates:", cords)
+                    print("Probability:", conf)
+                    print(cords[0],cords[1],cords[2],cords[3])
 
-            # await asyncio.sleep(2)
+                # await asyncio.sleep(2)
+                cv2.putText(img=saved_image , text=f"{class_id} : {conf}" , org=(cords[0],cords[1]-10) , fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1.1, color=(100, 0, 250), thickness=2, lineType=cv2.LINE_AA)
+                cv2.rectangle(saved_image, (cords[1], cords[0]), (cords[2], cords[3]), (100, 0, 250), 2)
+                result_path = os.path.join("static/uploads/", "final_classified_image.jpg")
+                cv2.imwrite( result_path , saved_image )
+                return await render_template("classification_result.html" , image_link=result_path)
 
-            cv2.putText(img=saved_image , text=f"{class_id} : {conf}" , org=(cords[0],cords[1]-10) , fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1.1, color=(100, 0, 250), thickness=2, lineType=cv2.LINE_AA)
-            cv2.rectangle(saved_image, (cords[1], cords[0]), (cords[2], cords[3]), (100, 0, 250), 2)
-            result_path = os.path.join("static/uploads/", "final_classified_image.jpg")
-            cv2.imwrite( result_path , saved_image )
-            return await render_template("classification_result.html" , image_link=result_path)
-
+    else :
+        await flash("First you have to login to use applications ⛔" , "info")
+        return redirect(url_for("login"))
 
 
 

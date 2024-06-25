@@ -6,6 +6,18 @@
 
 
 {% block content %}
+
+	{% with messages = get_flashed_messages(with_categories=true) %}
+		{% if messages %}
+			{% for category , message in messages %}
+				<h4 class="alert alert-{{ category }}" role="alert" style="padding-top:30px; padding-bottom:10px;">
+					{{ message }}
+				</h4>
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+
+
     <div class="banner_section layout_padding">
       <div class="container">
         <h1 class="banner_taital">Welcome To My Web Application  </h1>
@@ -18,7 +30,7 @@
 					<div class="row">
 						<div class="col-sm-8 col-lg-4" style="padding-top:13px; padding-left:65px;">
 							<div class="icon_1"><img src="static/images/icon-3.png"></div>
-							<h1 class="website_text" style="font-size:28px;"><a href="/login"><u>Face Analysis</u></a></h1>
+							<h1 class="website_text" style="font-size:28px;"><a href="/upload"><u>Face Analysis</u></a></h1>
 							<p class="dolor_text">Analyze Face Attributes</p>
 						</div>
 						<div class="col-sm-10 col-lg-4" style="padding-top:9px; padding-left:26px;">
