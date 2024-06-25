@@ -103,7 +103,7 @@ async def register():
                     db_session.add(new_user) # adding this object to database
                     db_session.commit()
                     db_session.refresh(new_user) 
-                    await flash("Your SignUp compleated successfully 🎉" , "success")
+                    await flash("Your SignUp compleated successfully 🎉" , "success") 
                     return  redirect(url_for("login"))
             else:
                 await flash("This username is already taken ❌,Choose another one" , "danger")
