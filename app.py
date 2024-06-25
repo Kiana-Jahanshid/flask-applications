@@ -104,7 +104,7 @@ async def register():
                     db_session.commit()
                     db_session.refresh(new_user) 
                     await flash("Your SignUp compleated successfully 🎉" , "success") 
-                    return  redirect(url_for("login"))
+                    return  redirect(url_for("login")) 
             else:
                 await flash("This username is already taken ❌,Choose another one" , "danger")
                 return  redirect(url_for("register"))
