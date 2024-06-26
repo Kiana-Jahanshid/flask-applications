@@ -7,4 +7,3 @@ ultralytics
 pydantic
 tf-keras
 psycopg2-binary
-python-dotenv
