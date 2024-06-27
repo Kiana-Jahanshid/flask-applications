@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    mind reader
+{% endblock %}
+
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+	{% if messages %}
+		{% for category , message in messages %}
+			<div class="alert alert-{{ category }}" role="alert" style="padding-top:30px; padding-bottom:10px;">
+				{{ message }}
+			</div>
+		{% endfor %}
+	{% endif %}
+{% endwith %}
+
+
+<section class="myform-area">
+    <div class="container" style=" padding-bottom: 145px;">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <form class="align-items-center" method="post">
+                    <h1 style=" padding-top: 40px;">Select a number : </p>
+                    <input name="selected_number" class="form-control form-control-lg" type="text" placeholder="Enter a number ... " aria-label=".form-control-lg example">
+                    <div >
+                        <button id="upload-submit" type="submit" class="btn btn-primary btn-lg">Submit</button>
+                    </div>
+                    <form runat="server">
+                        <div id="loader" class="loader" style="animation: spin 5s linear infinite;"></div>
+                    </form>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <script>src="static/js/bootstrap.js"
+        document.getElementById("loader").style.display ="none";
+        function openTest() {
+            document.getElementById("loader").style.display = "block";
+        }
+        document.getElementById('upload-submit').addEventListener('click', openTest);
+    
+    
+        imgInp.onchange = evt => {
+            const [file] = imgInp.files;
+            if (file) {
+              blah.src = URL.createObjectURL(file);
+            }
+          }
+    
+    </script>
+
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+
+{% block title %}
+    pose detection
+{% endblock %}
+
+  <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="static/css/pose-detection.css">
+
+{% block content %}
+
+<section class="myform-area">
+  <div class="container" >
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+          <h1 style="text-align: center; font-size: 35px; padding-top: 5px;"><b>Pose detection using the MediaPipe PoseLandmarker</b></h1>
+          <section id="demos">
+            <h3 style="text-align: center; padding-top: 30px; padding-bottom: 30px;">Stand in front of your webcam to get real-time pose landmarker detection.</h3>
+            <h5 style="text-align: center;"><b>Click to enable webcam</b></h5>
+            <div id="liveView" class="videoView" style="padding-left: 125px;">
+              <button id="webcamButton" class="mdc-button mdc-button--raised"  style="border-radius: 30px; width: 170px;  height: 42px; margin-left: 156px; background:#e0a8fe ; margin-bottom: 10px;">
+                <span class="mdc-button__ripple"></span>
+                <span class="mdc-button__label">ENABLE WEBCAM</span>
+              </button>
+              <div style="position: relative;">
+                <video id="webcam" style="width: 1640px; height: 1040px; position: abso" autoplay playsinline></video>
+                <canvas class="output_canvas" id="output_canvas" width="1640" height="1040" style="position: absolute; left: 0px; top: 0px;"></canvas>
+              </div>
+            </div>
+          </section>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <script type="module" src="static/js/pose-detection.js"></script>
+  <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+
+
+{% endblock %}

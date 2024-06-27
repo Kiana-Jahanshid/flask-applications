@@ -23,19 +23,18 @@
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <p> </p>
-                    <p> </p>
                     <h1 style=" padding-top: 40px;">Upload your Face image : </h1>
                     <p> </p>
-
                     <form method="post" enctype="multipart/form-data"> 
                         <div>
-                        <input name="image" class="form-control form-control-lg" id="imgInp" type="file" accept="image/*"  >
-                        <img id="output">
+                            <input name="image" class="form-control form-control-lg" id="imgInp" type="file" accept="image/*"  >
+                            <img id="output">
                         </div>
                         <button id="upload-submit" type="submit" class="btn btn-primary btn-lg">Submit</button>         
                         <p> </p>
-                        <p> </p>
-                        <span></span>
+                        <form runat="server">
+                            <div id="loader" class="loader"></div>
+                        </form>
                     </form>
                 </div>
             </div>
@@ -59,6 +58,3 @@
     </script>
 
 {% endblock %}
-
-
-

@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+
+{% block title %}
+    mind reader result
+{% endblock %}
+
+
+{% block content %}
+
+<section class="myform-area">
+    <div class="container" style=" padding-bottom: 175px;">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <p> </p>
+                <h6 class="website_text" style="padding-top: 1px; padding-bottom: 70px; font-size: 25px; "> Your selected number was : </h6>              
+                <div class="col-lg-6" style="float:none;margin:auto;">
+                    <h1 style=" text-align: center; font-size: 50px; ">
+                        <b> {{ selected_number }} !! 😎</b> 
+                    </h1>
+                </div>
+            </div>
+        </div>
+    </div>       
+</section>
+
+{% endblock %}

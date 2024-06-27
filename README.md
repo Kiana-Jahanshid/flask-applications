@@ -1,6 +1,6 @@
 # Face Analysis Website
 
-using flask , bootstrap , and [deepface framework](https://github.com/serengil/deepface)
+using flask , bootstrap , [deepface framework](https://github.com/serengil/deepface) , YOLOv8 , Mediapipe
 
 
 # How to install 
@@ -19,5 +19,5 @@ flask run --debug
 
 + app link :
 ```
-https://flask-app.liara.run/
+https://webapplication.liara.run/
 ```
