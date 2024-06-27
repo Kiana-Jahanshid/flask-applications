@@ -11,7 +11,7 @@ import bcrypt
 from deepface import DeepFace
 from databasefile import fetch_user , add_user_to_db 
 from PIL import Image
-from io import BytesIO
+from io import BytesIO 
 import base64
 import asyncio
 import glob 
