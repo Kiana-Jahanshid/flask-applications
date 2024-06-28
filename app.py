@@ -226,9 +226,9 @@ async def image_classification():
                     print("Probability:", conf)
                     print(cords[0],cords[1],cords[2],cords[3])
 
-                cv2.putText(img=readed_image , text=f"{class_id} : {conf}" , org=(cords[0],cords[1]-10) , fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1.1, color=(100, 0, 250), thickness=2, lineType=cv2.LINE_AA)
+                cv2.putText(img=readed_image , text=f"{class_id} : {conf}" , org=(cords[0],cords[1]+80) , fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1.2, color=(100, 0, 250), thickness=2, lineType=cv2.LINE_AA)
                 cv2.rectangle(readed_image, (cords[1], cords[0]), (cords[2], cords[3]), (100, 0, 250), 2)
-                result_path = os.path.join("static/uploads/", f"{prefix}.{postfix}")
+                result_path = os.path.join("static/uploads/", f"{prefix}z.{postfix}")
                 cv2.imwrite( result_path , readed_image )
                 await asyncio.sleep(2)
                 return await render_template("classification_result.html" , image_link=result_path)
