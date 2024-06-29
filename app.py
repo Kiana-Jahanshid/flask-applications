@@ -30,7 +30,6 @@ class RegisterModel(BaseModel):
 class LoginModel(BaseModel):
     username : str
     password : str
-    confirm_password : str
 
 
 app =Quart("face analysis")
@@ -81,7 +80,7 @@ async def login():
             register_login_data = LoginModel(username=(await request.form)["username"] , password=(await request.form)["password"])# if email & pass types are correct , user will be navigated to upload page
         except:
             await flash("Type error! ,One of your inputs has a wrong datatype" , "danger")
-            return await redirect(url_for("login"))
+            return redirect(url_for("login"))
         user  = fetch_user(register_login_data.username)
         if user :
             byte_password = register_login_data.password.encode("utf-8")
