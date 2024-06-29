@@ -78,29 +78,25 @@ async def login():
         return await render_template("login.html")
     elif request.method == "POST" : 
         try :            
-            register_login_data = LoginModel(username=(await request.form)["username"] , password=(await request.form)["password"] , confirm_password=(await request.form)["confirm_password"])# if email & pass types are correct , user will be navigated to upload page
+            register_login_data = LoginModel(username=(await request.form)["username"] , password=(await request.form)["password"])# if email & pass types are correct , user will be navigated to upload page
         except:
             await flash("Type error! ,One of your inputs has a wrong datatype" , "danger")
             return await redirect(url_for("login"))
         user  = fetch_user(register_login_data.username)
-
-        if (await request.form)["confirm_password"] == (await request.form)["password"] :
-            if user :
-                byte_password = register_login_data.password.encode("utf-8")
-                if bcrypt.checkpw(byte_password , user.password):  
-                    quart_session["username"]  =  register_login_data.username
-                    quart_session["user_id"] = user.id
-                    await flash("You logged in successfully 🎉" , "success")
-                    return redirect(url_for("main_page")) 
-                else:
-                    await flash("Password is incorrect ❌" , "danger")
-                    return redirect(url_for("login"))
-            else :
-                await flash("Username is incorrect ❌" , "danger")
+        if user :
+            byte_password = register_login_data.password.encode("utf-8")
+            if bcrypt.checkpw(byte_password , user.password):  
+                quart_session["username"]  =  register_login_data.username
+                quart_session["user_id"] = user.id
+                await flash("You logged in successfully 🎉" , "success")
+                return redirect(url_for("main_page")) 
+            else:
+                await flash("Password is incorrect ❌" , "danger")
                 return redirect(url_for("login"))
         else :
-            await flash("Confirm-password doesn't match with password ,Try again...", "warning")
+            await flash("Username is incorrect ❌" , "danger")
             return redirect(url_for("login"))
+
 
 
 @app.route("/logout" , methods=["GET"])
