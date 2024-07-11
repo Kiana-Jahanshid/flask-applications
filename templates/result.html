@@ -11,21 +11,23 @@
     <section class="myform-area">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <p> </p>
-                    <h2></h2>
-                    <div id="loader" class="loader"  ></div>
-                    <p class="website_text" style="padding-top: 1px; padding-bottom: 35px; font-size: 40px; ">   Prediction Result  </p>
-                
-                    <form runat="server">
-                        <div class="col-lg-6" style="float:none;margin:auto;">
-                        <h2 style=" text-align: center;">
-                            predicted age :  <b> {{ age }} </b> <br>
-                        </h2>
-                    
-                        <img src="{{ image_link }}" style="width: 500px;">
-                        </div>
-                    </form>           
+                <p> </p>
+                <h2></h2>
+                <div id="loader" class="loader" ></div>
+                <div class="card border-info mb-3" style="max-width: 35rem; text-align: center; padding-right: 10px;  border-radius: 15px;">
+                    <div class="card-body">                    
+                        <h1  style="padding-top: 1px; font-size: 40px;"> Face Analysis Result </h1>
+                        <form runat="server">
+                            <div  style="float:none;margin:auto;">
+                                <!-- <h2 style=" text-align: center;">
+                                    predicted age :  <b> {{ age }} </b> <br>
+                                    predicted gender :  <b> {{ gender }} </b> <br>
+                                </h2> -->
+                                <h3> </h3>
+                                <img src="{{ image_link }}" style="width: 500px;">
+                            </div>
+                        </form>                                
+                    </div>  
                 </div>
             </div>
         </div>       

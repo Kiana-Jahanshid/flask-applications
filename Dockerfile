@@ -4,7 +4,9 @@ WORKDIR /app
 
 RUN apt-get update
 RUN apt-get install ffmpeg libsm6 libxext6  -y
-RUN pip3 install opencv-python-headless
+RUN pip install pyyaml
+RUN pip install scikit-image
+
 
 COPY . .
 COPY requirements.txt requirements.txt

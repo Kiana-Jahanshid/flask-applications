@@ -1,11 +1,9 @@
 Quart
 opencv-python-headless
-deepface
 sqlmodel
 bcrypt
-ultralytics
 pydantic
 tf-keras
 psycopg2-binary
-mediapipe
 pillow
+onnxruntime

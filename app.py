@@ -6,15 +6,17 @@ os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 from quart import Quart , render_template , request, redirect,session as quart_session , url_for , flash
 import cv2
 from pydantic import BaseModel
-from ultralytics import YOLO
 import bcrypt
-from deepface import DeepFace
-from databasefile import fetch_user , add_user_to_db 
+# from deepface import DeepFace
+from databasefile import fetch_user , add_user_to_db , fetch_all_users
 from PIL import Image
 from io import BytesIO 
 import base64
-import asyncio
 import glob 
+from image_classification import YOLOv8
+from face_analysis import FaceAnalysis 
+from datetime import datetime
+from databasefile import relative_time_from_string
 
 class RegisterModel(BaseModel):
     username : str 
@@ -26,6 +28,7 @@ class RegisterModel(BaseModel):
     email : str
     age : int 
     confirm_password : str
+    joined_time : str
 
 class LoginModel(BaseModel):
     username : str
@@ -49,7 +52,7 @@ async def register():
         return await render_template("register.html")
     elif request.method == "POST" :
         try:
-            register_data = RegisterModel(username=(await request.form)["username"] ,password=(await request.form)['password'] , city=(await request.form)["city"]  ,country=(await request.form)["country"] , first_name=(await request.form)["firstname"] , last_name=(await request.form)["lastname"] , email=(await request.form)["email"] , age=(await request.form)["age"] , confirm_password=(await request.form)["confirm_password"])#validating attributes type
+            register_data = RegisterModel(username=(await request.form)["username"] ,password=(await request.form)['password'] , city=(await request.form)["city"]  ,country=(await request.form)["country"] , first_name=(await request.form)["firstname"] , last_name=(await request.form)["lastname"] , email=(await request.form)["email"] , age=(await request.form)["age"] , confirm_password=(await request.form)["confirm_password"] , joined_time=str(datetime.now()))#validating attributes type
             print((await request.form)["username"])
         except:
             await flash("Type Error! One of your input was wrong" , "danger")
@@ -59,7 +62,8 @@ async def register():
             if not user :
                 password_byte = register_data.password.encode("utf-8")
                 hashed_password = bcrypt.hashpw(password_byte , bcrypt.gensalt())
-                add_user_to_db(register_data.username ,  hashed_password , register_data.city , register_data.country , register_data.first_name , register_data.last_name , register_data.email , register_data.age)
+                hashed_password = hashed_password.decode("utf-8")
+                add_user_to_db(register_data.username ,  hashed_password , register_data.city , register_data.country , register_data.first_name , register_data.last_name , register_data.email , register_data.age , register_data.joined_time)
                 await flash("Your SignUp compleated successfully 🎉" , "success") 
                 return  redirect(url_for("login")) 
             else:
@@ -84,7 +88,7 @@ async def login():
         user  = fetch_user(register_login_data.username)
         if user :
             byte_password = register_login_data.password.encode("utf-8")
-            if bcrypt.checkpw(byte_password , user.password):  
+            if bcrypt.checkpw(byte_password , bytes( user.password , "utf-8" )):  
                 quart_session["username"]  =  register_login_data.username
                 quart_session["user_id"] = user.id
                 await flash("You logged in successfully 🎉" , "success")
@@ -138,12 +142,15 @@ async def upload() :
                         f.write(imgdata)
                     readed_image = cv2.imread(f"static/uploads/face.{postfix}")
 
-                    result = DeepFace.analyze(img_path = readed_image , actions = ['age'] ,  enforce_detection=False, silent=True)
-                    age = result[0]['age']
+                    # result = DeepFace.analyze(img_path = readed_image , actions = ['age'] ,  enforce_detection=False, silent=True)
+                    # age = result[0]['age']
 
-                    result_path_face = os.path.join("static/uploads/", f"{prefix}x.{postfix}")
-                    cv2.imwrite( result_path_face , readed_image )
-                    result = await render_template("result.html" ,image_link= result_path_face ,  age=age )
+                    face_analysis = FaceAnalysis("models/det_10g.onnx", "models/genderage.onnx")
+                    output_image, gender, age = face_analysis.detect_age_gender(readed_image)
+
+                    result_path_face = os.path.join("static/uploads/", f"{prefix}y.{postfix}")
+                    cv2.imwrite( result_path_face , output_image )
+                    result = await render_template("result.html" ,image_link= result_path_face )
                     return result
     else :
         await flash("First you have to login to use applications ⛔" , "info")
@@ -206,26 +213,11 @@ async def image_classification():
                     f.write(imgdata)
                 readed_image = cv2.imread(f"static/uploads/upload.{postfix}")
 
-                model = YOLO('models/yolov8n-seg.pt')
-                results = model.predict(readed_image)
-                result = results[0]
-                print(result)                
-                box = result.boxes[0]
-                for box in result.boxes:
-                    class_id = result.names[box.cls[0].item()]
-                    cords = box.xyxy[0].tolist()
-                    cords = [round(x) for x in cords]
-                    conf = round(box.conf[0].item(), 2)
-                    print("Object type:", class_id)
-                    print("Coordinates:", cords)
-                    print("Probability:", conf)
-                    print(cords[0],cords[1],cords[2],cords[3])
-
-                cv2.putText(img=readed_image , text=f"{class_id} : {conf}" , org=(cords[0],cords[1]+80) , fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1.2, color=(100, 0, 250), thickness=2, lineType=cv2.LINE_AA)
-                cv2.rectangle(readed_image, (cords[1], cords[0]), (cords[2], cords[3]), (100, 0, 250), 2)
+                object_detector = YOLOv8("models/yolov8n.onnx", confidence_threshold=0.5, iou_threshold=0.5)
+                output_image, output_labels = object_detector(readed_image)
                 result_path = os.path.join("static/uploads/", f"{prefix}z.{postfix}")
-                cv2.imwrite( result_path , readed_image )
-                await asyncio.sleep(2)
+                cv2.imwrite( result_path , output_image )
+
                 return await render_template("classification_result.html" , image_link=result_path)
     else :
         await flash("First you have to login to use applications ⛔" , "info")
@@ -255,6 +247,22 @@ async def pose_detection():
         await flash("First, you have to login to use applications ⛔" , "info")
         return redirect(url_for("login"))
 
+
+
+@app.route("/admin" , methods=["GET", "POST"])
+async def pannel_admin():
+    if quart_session.get("user_id") : #or quart_session.get("role") != "Admin":
+        all_users , user_count = fetch_all_users()
+        for user in all_users :
+            joined_time = str(user.joined_time)
+            parsed_time = datetime.strptime(joined_time, '%Y-%m-%d %H:%M:%S.%f')
+            formatted_time = parsed_time.strftime('%Y-%m-%d %H:%M:%S')
+            user.joined_time = relative_time_from_string(formatted_time)  
+
+        return await render_template("admin.html" , username= quart_session.get("username") , users=all_users , user_count=user_count)
+    else : 
+        await flash("You have to login ⛔" , "info")
+        return redirect(url_for("login"))
 
 
 # how to run

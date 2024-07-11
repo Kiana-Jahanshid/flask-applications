@@ -20,29 +20,30 @@
 
 
     <section class="myform-area" >
-        <div class="container" style=" padding-bottom: 145px;">
+        <div class="container" style=" padding-bottom: 140px;">
             <div class="row justify-content-center">
                 <div class="col-lg-8">
-                    <p> </p>
-                    <h1 style=" padding-top: 45px;">Upload your image : </h1>
-                    <p> </p>
-                    <form method="post" enctype="multipart/form-data"> 
-                        <div>
-                        <input name="image" class="form-control form-control-lg" id="imgInp" type="file" accept="image/*"  >
-                        <img id="output">
+                    <div class="card border-info mb-3" style="max-width: 50rem; border-radius: 15px;">
+                        <div class="card-body"> 
+                            <h1 class="card-text" style=" padding-top: 5px; font-size: 44px; ">Upload your image : </h1>
+                            <p> </p>
+                            <form method="post" enctype="multipart/form-data"> 
+                                <div>
+                                    <input name="image" class="form-control form-control-lg" id="imgInp" type="file" accept="image/*"  >
+                                    <img id="output">
+                                </div>
+                                <p style="color:rgb(24, 24, 24)"> ps : Please upload "jpg" or "jpeg" formats , not "png" ! </p>
+                                <button id="upload-submit" type="submit" class="btn btn-primary btn-lg">Submit</button>                            
+                                <h3> </h3>
+                                <form runat="server">
+                                    <div id="loader" class="loader"  ></div>
+                                </form>
+                                <div style="float:none;margin:auto;">
+                                    <img src="{{ image_link }}" style="width: 3000px;">
+                                </div>
+                            </form>
                         </div>
-                        <p style="color:black"> ps : Here, you can only upload "jpg" or "jpeg" images ,and not "png" ! </p>
-                        <button id="upload-submit" type="submit" class="btn btn-primary btn-lg">Submit</button>  
-                               
-                        <p> </p>
-                        <span></span>
-                        <form runat="server">
-                        <div id="loader" class="loader"  ></div>
-                        </form>
-                        <div class="col-lg-8" style="float:none;margin:auto;">
-                        <img src="{{ image_link }}" style="width: 900px;">
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>       
