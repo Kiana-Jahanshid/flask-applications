@@ -13,7 +13,7 @@ class User(SQLModel , table=True):
     country : str 
     joined_time : str
 
-engine = create_engine(url="postgresql://username:pass@postgr:5432/database" , echo=True) #"sqlite:///./database.db"
+engine = create_engine(url="postgresql://root:OMVzj1tCUqSnwH3iZ6WhNz1C@webappdb:5432/postgres" , echo=True) #"sqlite:///./database.db" -  "postgresql://username:pass@postgr:5432/database"
 SQLModel.metadata.create_all(engine)
 
 
