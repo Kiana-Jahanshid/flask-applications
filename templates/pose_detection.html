@@ -1,25 +1,40 @@
 {% extends "layout.html" %}
 
-
 {% block title %}
     pose detection
 {% endblock %}
 
-  <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="static/css/pose-detection.css">
 
 {% block content %}
+<link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
 
-<section class="myform-area">
+<style>
+  body {
+      margin: 0;
+      padding: 0;
+      background-image: url('static/images/ban9.jpg'); /* Replace with your image URL */
+      background-repeat: repeat;
+      background-attachment:initial;
+      background-size:cover; /* Ensure the image is displayed at its original size */
+  }
+  
+  .content {
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+  }
+</style>
+
+<!-- <section class="myform-area"> -->
   <div class="container" >
     <div class="row justify-content-center">
       <div class="col-lg-8">
-          <h1 style="text-align: center; font-size: 35px; padding-top: 5px;"><b>Pose detection using the MediaPipe PoseLandmarker</b></h1>
+          <h1 style="text-align: center; font-size: 40px; padding-top: 140px; color:white"><b>Pose detection using the MediaPipe PoseLandmarker</b></h1>
           <section id="demos">
-            <h3 style="text-align: center; padding-top: 30px; padding-bottom: 30px;">Stand in front of your webcam to get real-time pose landmarker detection.</h3>
+            <h3 style="text-align: center; padding-top: 30px; padding-bottom: 30px; color:rgb(202, 113, 254)">Stand in front of your webcam to get real-time pose landmarker detection.</h3>
             <h5 style="text-align: center;"><b>Click to enable webcam</b></h5>
             <div id="liveView" class="videoView" style="padding-left: 125px;">
-              <button id="webcamButton" class="mdc-button mdc-button--raised"  style="border-radius: 30px; width: 170px;  height: 42px; margin-left: 156px; background:#e0a8fe ; margin-bottom: 10px;">
+              <button id="webcamButton" class="mdc-button mdc-button--raised"  style="border-radius: 30px; width: 175px;  height: 45px; margin-left: 153px; background:#e0a8fe ; margin-bottom: 10px;">
                 <span class="mdc-button__ripple"></span>
                 <span class="mdc-button__label">ENABLE WEBCAM</span>
               </button>

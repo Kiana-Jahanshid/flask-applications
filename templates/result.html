@@ -8,30 +8,82 @@
 
 {% block content %}
 
-    <section class="myform-area">
-        <div class="container">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css" />
+    <style>
+        .custom-separator {
+            border-top: 2px solid #13feee;
+        }
+
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url('static/images/ban5.jpg'); /* Replace with your image URL */
+            background-repeat: repeat;
+            background-attachment: initial;
+            background-size: cover; /* Ensure the image is displayed at its original size */
+        }
+        
+    
+        .content {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+    </style>
+
+    <!-- <section class="myform-area"> -->
+        <div class="container" style=" padding-bottom: 140px; padding-top: 100px;">
             <div class="row justify-content-center">
                 <p> </p>
                 <h2></h2>
                 <div id="loader" class="loader" ></div>
-                <div class="card border-info mb-3" style="max-width: 35rem; text-align: center; padding-right: 10px;  border-radius: 15px;">
+                <div class="card border-info mb-3" style="max-width: 35rem; text-align: center;  border-radius: 15px; margin-right:80px;">
                     <div class="card-body">                    
                         <h1  style="padding-top: 1px; font-size: 40px;"> Face Analysis Result </h1>
                         <form runat="server">
                             <div  style="float:none;margin:auto;">
-                                <!-- <h2 style=" text-align: center;">
-                                    predicted age :  <b> {{ age }} </b> <br>
-                                    predicted gender :  <b> {{ gender }} </b> <br>
-                                </h2> -->
                                 <h3> </h3>
                                 <img src="{{ image_link }}" style="width: 500px;">
                             </div>
                         </form>                                
                     </div>  
                 </div>
+                <span></span>
+                <span></span>
+                <div class="col-lg-5">
+                    <div class="card text-bg-info mb-4" style="margin-top: 1px; border-radius: 15px; ">
+                        <div class="card-header"><h3>Comments :</h3></div>
+                        <div data-bs-spy="scroll" data-bs-target="#simple-list-example" data-bs-offset="0" data-bs-smooth-scroll="true" class="scrollspy-example" tabindex="0"></div>
+                            {% for comment , username in all_comments %}
+                                <div class="card-body">
+                                    <p id="simple-list-item-1" class="card-text" style="font-size: large;"> {{ username }} : </p>
+                                    <h5 class="card-title"> {{ comment | safe }} </h5>                                
+                                    <hr class="custom-separator">
+                                </div>
+                            {% endfor %}
+                            
+                    </div>
+                    <!-- comment form -->
+                    <!-- bc we have 2 form , we should define action to prevent conflict between them for recieving data in frontend-->
+                    <form  method="post" action="/add_comment_faceanalysis" style="border-radius: 15px; padding-top: 30px;"> 
+                        <div class="mb-5" >
+                            <label for="exampleFormControlTextarea1" class="form-label" style="color: black">Write a Comment </label>
+                            <textarea id="editor" name="text" class="form-control" id="exampleFormControlTextarea1" rows="8" style="border-radius: 30px;"></textarea><!-- textarea should have a name to read its text in backend-->
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="background-color:rgb(161, 12, 240) ;">Submit</button>
+                    </form>
+                </div>
             </div>
-        </div>       
+        </div>
     </section>
+
+
+
+    
 
 
     <script>src="static/js/bootstrap.js"
@@ -44,6 +96,42 @@
 
 
     <script>src="static/js/bootstrap.js"</script>
+
+
+
+    <script type="importmap">
+        {
+            "imports": {
+                "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/42.0.1/ckeditor5.js",
+                "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/42.0.1/"
+            }
+        }
+    </script>
+
+
+    <script type="module">
+        import {
+            ClassicEditor,
+            Essentials,
+            Bold,
+            Italic,
+            Font,
+            Paragraph
+        } from 'ckeditor5';
+    
+        ClassicEditor
+            .create( document.querySelector( '#editor' ), {
+                plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
+                toolbar: {
+                    items: [
+                        'undo', 'redo', '|', 'bold', 'italic', '|',
+                        'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+                    ]
+                }
+            } )
+            .then( /* ... */ )
+            .catch( /* ... */ );
+    </script>
 {% endblock %}
 
 

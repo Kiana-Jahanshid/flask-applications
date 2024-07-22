@@ -8,6 +8,23 @@
 
 {% block content %}
 
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background-image: url('static/images/ban4.jpg'); /* Replace with your image URL */
+        background-repeat: repeat;
+        background-attachment:initial;
+        background-size:cover; /* Ensure the image is displayed at its original size */
+    }
+    
+    .content {
+        padding: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+</style>
+
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category , message in messages %}
@@ -18,26 +35,26 @@
         {% endif %}
     {% endwith %}
 
-    <section class="myform-area" >
+    <!-- <section class="myform-area" > -->
         <div class="container" style=" padding-bottom: 145px;">
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <p> </p>
-                    <h1 style=" padding-top: 40px;">Upload your Face image : </h1>
+                    <h1 style=" padding-top: 150px; padding-bottom: 15px; font-size:xx-large">Upload your Face image : </h1>
                     <p> </p>
                     <form method="post" enctype="multipart/form-data"> 
                         <div>
                             <input name="image" class="form-control form-control-lg" id="imgInp" type="file" accept="image/*"  >
                             <img id="output">
                         </div>
-                        <button id="upload-submit" type="submit" class="btn btn-primary btn-lg">Submit</button>         
+                        <button id="upload-submit" type="submit" class="btn btn-primary btn-lg" style=" margin-left:10px;">Submit</button>         
                         <p> </p>
                         <form runat="server">
                             <div id="loader" class="loader"></div>
                         </form>
-                    </form>
+                    </form>    
                 </div>
-            </div>
+            </div>       
         </div>       
     </section>
 
@@ -57,4 +74,5 @@
           }
     </script>
 
+    
 {% endblock %}

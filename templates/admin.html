@@ -18,10 +18,6 @@
         <div class="col-md-12 p-0 m-0">
           <div class="card-body card-body-padding d-flex align-items-center justify-content-between">
             <div class="ps-lg-3">
-              <div class="d-flex align-items-center justify-content-between">
-                <p class="mb-0 font-weight-medium me-3 buy-now-text">Free 24/7 customer support, updates, and more with this template!</p>
-                <a href="https://www.bootstrapdash.com/product/purple-bootstrap-admin-template/" target="_blank" class="btn me-2 buy-now-btn border-0">Buy Now</a>
-              </div>
             </div>
             <div class="d-flex align-items-center justify-content-between">
               <a href="https://www.bootstrapdash.com/product/purple-bootstrap-admin-template/"><i class="mdi mdi-home me-3 text-white"></i></a>
@@ -128,7 +124,7 @@
                     <img src="static/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
                     <h4 class="font-weight-normal mb-3">Total visits <i class="mdi mdi-bookmark-outline mdi-24px float-end"></i>
                     </h4>
-                    <h2 class="mb-5">{{ user_account }}</h2>
+                    <h2 class="mb-5">{{ user_count }}</h2>
                   </div>
                 </div>
               </div>
@@ -138,8 +134,8 @@
                     <img src="static/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
                     <h4 class="font-weight-normal mb-3">Visitors Online <i class="mdi mdi-diamond mdi-24px float-end"></i>
                     </h4>
-                    <h2 class="mb-5">95,5741</h2>
-                    <h6 class="card-text">Increased by 5%</h6>
+                    <h2 class="mb-5">1</h2>
+                    <h6 class="card-text"></h6>
                   </div>
                 </div>
               </div>
@@ -184,6 +180,73 @@
                 </div>
               </div>
             </div>
+
+
+            <div class="row">
+              <div class="col-12 grid-margin">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">Image Classification's Comments </h4>
+                    <div class="table-responsive">
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th> Username </th>
+                            <th> comment </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        {% for comment , username in ClassificationComments %}  
+                          <tr>
+                            <td>
+                              <img src="static/images/faces-clipart/pic-4.png" class="me-2" alt="image"> {{ username }}
+                            </td>
+                            <td>
+                              <label class="me-2">{{ comment | safe }}</label>
+                            </td>
+                          </tr>
+                        {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="row">
+              <div class="col-12 grid-margin">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">Face Analysis's Comments </h4>
+                    <div class="table-responsive">
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th> Username </th>
+                            <th> comment </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        {% for comment , username in FaceAnalysisComments %}  
+                          <tr>
+                            <td>
+                              <img src="static/images/faces-clipart/pic-4.png" class="me-2" alt="image"> {{ username }}
+                            </td>
+                            <td>
+                              <label class="me-2">{{ comment | safe }}</label>
+                            </td>
+                          </tr>
+                        {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div class="row">
               <div class="col-md-7 grid-margin stretch-card">
                 <div class="card">

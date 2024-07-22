@@ -7,3 +7,5 @@ tf-keras
 psycopg2-binary
 pillow
 onnxruntime
+Fastapi
+uvicorn

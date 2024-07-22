@@ -1,7 +1,8 @@
 from sqlmodel import Field , SQLModel ,Session , select , create_engine
 from datetime import datetime
+
 class User(SQLModel , table=True):
-    __tablename__ = "user"
+    __tablename__ = "users"
     id : int = Field(default=None , primary_key=True)
     username : str = Field(index=True)
     password : str 
@@ -13,7 +14,26 @@ class User(SQLModel , table=True):
     country : str 
     joined_time : str
 
-engine = create_engine(url="postgresql://root:OMVzj1tCUqSnwH3iZ6WhNz1C@webappdb:5432/postgres" , echo=True) #"sqlite:///./database.db" -  "postgresql://username:pass@postgr:5432/database"
+class Comment(SQLModel , table=True):
+    __tablename__ = "comments"
+    id : int = Field(default=None , primary_key=True)
+    username : str
+    user_id : int = Field(foreign_key="users.id") # id of "user table"
+    content : str
+    time_stamp : datetime = Field(default_factory=datetime.now)
+
+class Comment_ForFaceAnalysis(SQLModel , table=True):
+    __tablename__ = "comments_faceanalysis"
+    id : int = Field(default=None , primary_key=True)
+    username : str
+    user_id : int = Field(foreign_key="users.id") # id of "user table"
+    content : str
+    time_stamp : datetime = Field(default_factory=datetime.now)
+
+
+# "postgresql://root:OMVzj1tCUqSnwH3iZ6WhNz1C@webappdb:5432/postgres" it's only for deploying in liara 
+# "postgresql://username:pass@postgr:5432/database"  --->>  will run on :  http://127.0.0.1:8080/
+engine = create_engine(url= "sqlite:///./databasee.db", echo=True) #"sqlite:///./database.db" -  "postgresql://username:pass@postgr:5432/database"
 SQLModel.metadata.create_all(engine)
 
 
@@ -55,3 +75,38 @@ def relative_time_from_string(time_string):
         days = int(seconds // 86400)
         return f"{days} days ago"
 
+
+def add_comment_to_db(comment , username , user_id):
+    with Session(engine) as db_session:
+        new_comment= Comment(content=comment , username=username , time_stamp=datetime.now() , user_id=user_id)
+        db_session.add(new_comment)
+        db_session.commit()
+        db_session.refresh(new_comment)
+
+
+def add_comment_ToFaceAnalysisDB(comment , username , user_id):
+    with Session(engine) as db_session :
+        new_comment = Comment_ForFaceAnalysis(content=comment , username=username , user_id=user_id , time_stamp=datetime.now())
+        db_session.add(new_comment)
+        db_session.commit()
+        db_session.refresh(new_comment)
+
+
+def fetch_comments():
+    c = []
+    with Session(engine) as db_session:
+        # comments = select(Comment.content)
+        # all_comments = list( db_session.exec(comments) )
+        # for comment in all_comments :
+        #     c.append(comment)
+        stmt = select(Comment.content, Comment.username)
+        all_comments = list( db_session.exec(stmt) )
+        return all_comments
+
+
+def fetch_faceanalysis_comments():
+    with Session(engine) as db_session:
+        stmt = select(Comment_ForFaceAnalysis.content, Comment_ForFaceAnalysis.username)
+        all_comments = list( db_session.exec(stmt) )
+        return all_comments
+        

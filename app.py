@@ -3,12 +3,12 @@ import tempfile
 os.environ['MPLCONFIGDIR'] = tempfile.mkdtemp()
 os.environ["YOLO_CONFIG_DIR"] = tempfile.mkdtemp()
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
-from quart import Quart , render_template , request, redirect,session as quart_session , url_for , flash
+from quart import Quart , render_template , request, redirect,session as quart_session , url_for , flash 
 import cv2
 from pydantic import BaseModel
 import bcrypt
 # from deepface import DeepFace
-from databasefile import fetch_user , add_user_to_db , fetch_all_users
+from databasefile import fetch_user , add_user_to_db , fetch_all_users , relative_time_from_string , add_comment_to_db , add_comment_ToFaceAnalysisDB ,   fetch_comments , fetch_faceanalysis_comments
 from PIL import Image
 from io import BytesIO 
 import base64
@@ -16,7 +16,7 @@ import glob
 from image_classification import YOLOv8
 from face_analysis import FaceAnalysis 
 from datetime import datetime
-from databasefile import relative_time_from_string
+import json 
 
 class RegisterModel(BaseModel):
     username : str 
@@ -29,6 +29,13 @@ class RegisterModel(BaseModel):
     age : int 
     confirm_password : str
     joined_time : str
+
+class RegisterComments(BaseModel): 
+    comment : str
+    username : str
+    user_id : int 
+    
+
 
 class LoginModel(BaseModel):
     username : str
@@ -88,7 +95,7 @@ async def login():
         user  = fetch_user(register_login_data.username)
         if user :
             byte_password = register_login_data.password.encode("utf-8")
-            if bcrypt.checkpw(byte_password , bytes( user.password , "utf-8" )):  
+            if bcrypt.checkpw(byte_password , user.password ):  
                 quart_session["username"]  =  register_login_data.username
                 quart_session["user_id"] = user.id
                 await flash("You logged in successfully 🎉" , "success")
@@ -114,7 +121,7 @@ async def upload() :
     if quart_session.get("user_id"):
 
         if request.method == "GET" :
-            return await render_template("upload.html")
+            return await render_template("upload.html" )
         elif request.method == "POST" :
             user_image = (await request.files)["image"] # name of input tag was image in login file # uploaded file is in  ( request.files() )
             postfix =str( user_image.filename.rsplit('.', 1)[1].lower() )
@@ -124,7 +131,7 @@ async def upload() :
             else :
                 if user_image  : 
                     upload_path = os.path.join(app.config["UPLOAD_FOLDER"] , user_image.filename)
-                    user_image.save(upload_path)
+                    await user_image.save(upload_path)
 
                     files = glob.glob('static/uploads/*')
                     for f in files:
@@ -142,15 +149,13 @@ async def upload() :
                         f.write(imgdata)
                     readed_image = cv2.imread(f"static/uploads/face.{postfix}")
 
-                    # result = DeepFace.analyze(img_path = readed_image , actions = ['age'] ,  enforce_detection=False, silent=True)
-                    # age = result[0]['age']
-
                     face_analysis = FaceAnalysis("models/det_10g.onnx", "models/genderage.onnx")
                     output_image, gender, age = face_analysis.detect_age_gender(readed_image)
 
                     result_path_face = os.path.join("static/uploads/", f"{prefix}y.{postfix}")
                     cv2.imwrite( result_path_face , output_image )
-                    result = await render_template("result.html" ,image_link= result_path_face )
+                    all_comments = fetch_faceanalysis_comments()
+                    result = await render_template("result.html" ,image_link= result_path_face , all_comments=all_comments)
                     return result
     else :
         await flash("First you have to login to use applications ⛔" , "info")
@@ -184,7 +189,8 @@ async def bmr_calc():
 async def image_classification():
     if quart_session.get("user_id"):
         if request.method == "GET" : 
-            return await render_template("classification_result.html")
+            all_comments= fetch_comments()
+            return await render_template("classification_result.html" , all_comments=all_comments)
         elif request.method == "POST":
             input_image = (await request.files)["image"]
             postfix =str( input_image.filename.rsplit('.', 1)[1].lower() )
@@ -193,7 +199,7 @@ async def image_classification():
                 return await render_template("classification_result.html")
             elif input_image :
                 path = os.path.join(app.config["UPLOAD_FOLDER"] , input_image.filename)
-                input_image.save(path)
+                await input_image.save(path)
                 print(path)
 
                 files = glob.glob('static/uploads/*')
@@ -217,8 +223,8 @@ async def image_classification():
                 output_image, output_labels = object_detector(readed_image)
                 result_path = os.path.join("static/uploads/", f"{prefix}z.{postfix}")
                 cv2.imwrite( result_path , output_image )
-
-                return await render_template("classification_result.html" , image_link=result_path)
+                all_comments= fetch_comments()
+                return await render_template("classification_result.html" , image_link=result_path, all_comments=all_comments )
     else :
         await flash("First you have to login to use applications ⛔" , "info")
         return redirect(url_for("login"))
@@ -237,6 +243,7 @@ async def mind_reader():
     else :
         await flash("First, you have to login to use applications ⛔" , "info")
         return redirect(url_for("login"))
+
 
 
 @app.route("/pose_detection" , methods=["GET"])
@@ -259,10 +266,50 @@ async def pannel_admin():
             formatted_time = parsed_time.strftime('%Y-%m-%d %H:%M:%S')
             user.joined_time = relative_time_from_string(formatted_time)  
 
-        return await render_template("admin.html" , username= quart_session.get("username") , users=all_users , user_count=user_count)
+        ClassificationComments = fetch_comments()
+        FaceAnalysisComments = fetch_faceanalysis_comments()
+        return await render_template("admin.html" , username= quart_session.get("username") , users=all_users , user_count=user_count , ClassificationComments=ClassificationComments , FaceAnalysisComments=FaceAnalysisComments)
     else : 
         await flash("You have to login ⛔" , "info")
         return redirect(url_for("login"))
+
+
+
+@app.route("/add_comment" , methods=["POST"])
+async def comment(): 
+    if quart_session.get("user_id"):
+        comment = (await request.form)["text"] 
+        comment_model = RegisterComments(comment=comment , username=quart_session.get("username") , user_id=quart_session.get("user_id"))
+        comment_model.comment = comment[3:-4] #  tag <p> removed bc it didn't let font style to be shown 
+        add_comment_to_db(comment=comment_model.comment , username=comment_model.username , user_id=comment_model.user_id)
+        return redirect(url_for("image_classification"))
+    else :
+        await flash("You have to login ⛔" , "info")
+        return redirect(url_for("login"))
+
+
+@app.route("/add_comment_faceanalysis" , methods=["POST"])
+async def comment_faceanalysis(): 
+    if quart_session.get("user_id"):
+        comment = (await request.form)["text"]
+        comment_model = RegisterComments(comment=comment , username=quart_session.get("username") , user_id=quart_session.get("user_id"))
+        comment_model.comment = comment[3:-4] #  tag <p> removed bc it didn't let font style to be shown 
+        add_comment_ToFaceAnalysisDB(comment=comment_model.comment , username=comment_model.username , user_id=comment_model.user_id)
+        return redirect(url_for("upload"))
+    else :
+        await flash("You have to login ⛔" , "info")
+        return redirect(url_for("login"))
+    
+
+
+@app.route("/api" , methods=["GET","POST"])
+async def user_count():
+    _ , user_count = fetch_all_users()
+    json_data = f'{{"users":{{"count": {user_count} }}}}'
+    j = json.dumps(json_data, indent=2)     
+    j = json.loads(j) 
+    return await render_template("count.html" , json=j )
+
 
 
 # how to run
@@ -271,3 +318,7 @@ async def pannel_admin():
 
 # now : 
 # quart --app app run
+
+
+# in docker-compose : 
+# will be run at http://127.0.0.1:8080

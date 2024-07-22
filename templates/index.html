@@ -7,6 +7,24 @@
 
 {% block content %}
 
+<style>
+	
+	body {
+		margin: 0;
+		padding: 0;
+		background-image: url('static/images/banner-bg.png'); /* Replace with your image URL */
+		background-repeat: repeat;
+		background-attachment: initial;
+		background-size: cover; /* Ensure the image is displayed at its original size */
+	}
+	
+
+	.content {
+		padding: 20px;
+		max-width: 800px;
+		margin: 0 auto;
+	}
+</style>
 	{% with messages = get_flashed_messages(with_categories=true) %}
 		{% if messages %}
 			{% for category , message in messages %}
@@ -18,7 +36,7 @@
 	{% endwith %}
 
 
-    <div class="banner_section layout_padding">
+    <!-- <div class="banner_section layout_padding"> -->
       <div class="container">
         <h1 class="banner_taital">Welcome To My Web Application  </h1>
 		<div class="service_section layout_padding" style="padding-top:10px; padding-right: 30px;">

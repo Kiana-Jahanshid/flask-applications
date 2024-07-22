@@ -7,7 +7,33 @@
 
 
 {% block content %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css" />
+    <style>
+        .custom-separator {
+            border-top: 2px solid #010e84;
+        }
+    
 
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url('static/images/ban4.jpg'); /* Replace with your image URL */
+            background-repeat: repeat;
+            background-attachment: initial;
+            background-size: cover; /* Ensure the image is displayed at its original size */
+        }
+        
+    
+        .content {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+    </style>
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category , message in messages %}
@@ -19,8 +45,8 @@
     {% endwith %}
 
 
-    <section class="myform-area" >
-        <div class="container" style=" padding-bottom: 140px;">
+    <!-- <section class="myform-area" > -->
+        <div class="container" style=" padding-bottom: 140px; padding-top: 100px;">
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <div class="card border-info mb-3" style="max-width: 50rem; border-radius: 15px;">
@@ -45,8 +71,31 @@
                         </div>
                     </div>
                 </div>
+                
+                <span> </span>
+                <h2>  </h2>
+                <div class="col-lg-5">
+                    <div class="card text-bg-info mb-4" style="background-color:rgb(255, 255, 255); margin-top: 40px; border-radius: 15px;">
+                        <div class="card-header"><h3>Comments :</h3></div>
+                            {% for comment , username in all_comments %}
+                                <div class="card-body">
+                                    <p class="card-text" style="font-size:larger; font-weight:bold;"> {{ username }} :</p>
+                                    <h6 class="card-title" style="padding-left: 10px;"> {{ comment | safe }} </h6>                                                            
+                                    <hr class="custom-separator">
+                                </div>
+                            {% endfor %}
+                    </div>
+                    <!-- comment form -->
+                    <!-- bc we have 2 form , we should define action to prevent conflict between them for recieving data in frontend-->
+                    <form  method="post" action="/add_comment" style="padding-top: 50px;"> 
+                        <div class="mb-4" >
+                            <label for="exampleFormControlTextarea1" class="form-label" style="color: black; font-size:larger">Write a Comment </label>
+                            <textarea id="editor" name="text" class="form-control" id="exampleFormControlTextarea1" rows="10"></textarea><!-- textarea should have a name to read its text in backend-->
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="background-color:rgb(17, 160, 255); padding-top: 0px;">Submit</button>
+                    </form>
+                </div>
             </div>
-        </div>       
     </section>
 
 
@@ -69,5 +118,40 @@
           }
     </script>
     <script>src="static/js/bootstrap.js"</script>
+    
+    <script type="importmap">
+        {
+            "imports": {
+                "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/42.0.1/ckeditor5.js",
+                "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/42.0.1/"
+            }
+        }
+    </script>
+
+
+    <script type="module">
+        import {
+            ClassicEditor,
+            Essentials,
+            Bold,
+            Italic,
+            Font,
+            Paragraph
+        } from 'ckeditor5';
+    
+        ClassicEditor
+            .create( document.querySelector( '#editor' ), {
+                plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
+                toolbar: {
+                    items: [
+                        'undo', 'redo', '|', 'bold', 'italic', '|',
+                        'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+                    ]
+                }
+            } )
+            .then( /* ... */ )
+            .catch( /* ... */ );
+    </script>
+    
 
 {% endblock %}
