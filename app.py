@@ -95,7 +95,7 @@ async def login():
         user  = fetch_user(register_login_data.username)
         if user :
             byte_password = register_login_data.password.encode("utf-8")
-            if bcrypt.checkpw(byte_password , user.password ):  
+            if bcrypt.checkpw(byte_password , bytes( user.password , "utf-8" ) ): # user.password (for postgres)
                 quart_session["username"]  =  register_login_data.username
                 quart_session["user_id"] = user.id
                 await flash("You logged in successfully 🎉" , "success")
