@@ -1,2 +1,2 @@
-web: quart -b :5000 app:app
+web: quart --app app run
 
