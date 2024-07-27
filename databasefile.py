@@ -1,4 +1,4 @@
-from sqlmodel import Field , SQLModel ,Session , select , create_engine
+from sqlmodel import Field , SQLModel ,Session , select , create_engine 
 from datetime import datetime
 
 class User(SQLModel , table=True):
@@ -45,7 +45,7 @@ class BlogPost(SQLModel , table=True):
 # "postgresql://root:OMVzj1tCUqSnwH3iZ6WhNz1C@webappdb:5432/postgres" it's only for deploying in liara 
 # "postgresql://username:pass@postgr:5432/database"  --->>  will run on :  http://127.0.0.1:8080/
 # "postgres://koyeb-adm:A3tIEKbVC9Si@ep-shrill-bread-a28dxh64.eu-central-1.pg.koyeb.app/koyebdb"
-engine = create_engine(url= "postgres://koyeb-adm:A3tIEKbVC9Si@ep-shrill-bread-a28dxh64.eu-central-1.pg.koyeb.app/koyebdb", echo=True) #"sqlite:///./database.db" -  "postgresql://username:pass@postgr:5432/database"
+engine = create_engine(url= "postgresql://koyeb-adm:A3tIEKbVC9Si@ep-shrill-bread-a28dxh64.eu-central-1.pg.koyeb.app/koyebdb", echo=True) #"sqlite:///./database.db" -  "postgresql://username:pass@postgr:5432/database"
 SQLModel.metadata.create_all(engine)
 
 

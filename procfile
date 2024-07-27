@@ -1,2 +1,2 @@
-web: python app.py
+web: quart --app app run
 
