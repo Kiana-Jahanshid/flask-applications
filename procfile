@@ -1,2 +1,2 @@
-web: uvicorn app:app --port 5000
+web: python app.py
 
