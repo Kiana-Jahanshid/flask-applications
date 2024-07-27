@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    BLOG
+{% endblock %}
+
+
+{% block content %}
+
+<div class="row mt-6">
+    <div class="col-6">
+        <div class="list-group">
+
+            {% for post in posts %}
+                <a href="{{ url_for('post_detail', title=post.title ) }}" class="list-group-item list-group-item-action" aria-current="true">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ post.title }}</h5>
+                    </div>
+                    <p class="mb-1 text-truncate"> {{ post.content }} ...</p>
+                    <p> Author : {{ post.author }} </p>
+                    <small>{{ post.time_stamp }}</small>
+                </a> 
+
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+{% endblock %}

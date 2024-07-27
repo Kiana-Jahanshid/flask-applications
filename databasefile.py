@@ -31,9 +31,20 @@ class Comment_ForFaceAnalysis(SQLModel , table=True):
     time_stamp : datetime = Field(default_factory=datetime.now)
 
 
+class BlogPost(SQLModel , table=True):
+    __tablename__ = "posts"
+    id : int = Field(default=None , primary_key=True)
+    title : str
+    content : str
+    author : str 
+    user_id : int = Field(foreign_key="users.id")
+    time_stamp : datetime = Field(default_factory=datetime.now)
+    
+
+
 # "postgresql://root:OMVzj1tCUqSnwH3iZ6WhNz1C@webappdb:5432/postgres" it's only for deploying in liara 
 # "postgresql://username:pass@postgr:5432/database"  --->>  will run on :  http://127.0.0.1:8080/
-engine = create_engine(url= "postgresql://root:OMVzj1tCUqSnwH3iZ6WhNz1C@webappdb:5432/postgres", echo=True) #"sqlite:///./database.db" -  "postgresql://username:pass@postgr:5432/database"
+engine = create_engine(url= "sqlite:///./databasee.db", echo=True) #"sqlite:///./database.db" -  "postgresql://username:pass@postgr:5432/database"
 SQLModel.metadata.create_all(engine)
 
 
@@ -93,12 +104,7 @@ def add_comment_ToFaceAnalysisDB(comment , username , user_id):
 
 
 def fetch_comments():
-    c = []
     with Session(engine) as db_session:
-        # comments = select(Comment.content)
-        # all_comments = list( db_session.exec(comments) )
-        # for comment in all_comments :
-        #     c.append(comment)
         stmt = select(Comment.content, Comment.username)
         all_comments = list( db_session.exec(stmt) )
         return all_comments
@@ -110,3 +116,25 @@ def fetch_faceanalysis_comments():
         all_comments = list( db_session.exec(stmt) )
         return all_comments
         
+
+
+def fetch_all_blogposts():
+    with Session(engine) as db_session :
+        posts = select(BlogPost)
+        posts = list(db_session.exec(posts))
+        return posts 
+    
+
+def add_NewPost_to_DB(title , content , author , user_id):
+    with Session(engine) as db_session:
+        new_post = BlogPost(title=title , content=content , author=author ,user_id=user_id , time_stamp=datetime.now())
+        db_session.add(new_post)
+        db_session.commit()
+        db_session.refresh(new_post)
+
+
+def read_a_post(title):
+    with Session(engine) as db_session: # sqlite3.connect('databasee.db')
+        selected_post = select(BlogPost).where(BlogPost.title == title)
+        post = db_session.exec(selected_post).first()
+        return post

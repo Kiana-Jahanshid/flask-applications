@@ -8,7 +8,7 @@ import cv2
 from pydantic import BaseModel
 import bcrypt
 # from deepface import DeepFace
-from databasefile import fetch_user , add_user_to_db , fetch_all_users , relative_time_from_string , add_comment_to_db , add_comment_ToFaceAnalysisDB ,   fetch_comments , fetch_faceanalysis_comments
+from databasefile import fetch_user , add_user_to_db , fetch_all_users , relative_time_from_string , add_comment_to_db , add_comment_ToFaceAnalysisDB ,   fetch_comments , fetch_faceanalysis_comments , fetch_all_blogposts , add_NewPost_to_DB , read_a_post
 from PIL import Image
 from io import BytesIO 
 import base64
@@ -30,16 +30,18 @@ class RegisterModel(BaseModel):
     confirm_password : str
     joined_time : str
 
+class LoginModel(BaseModel):
+    username : str
+    password : str
+
 class RegisterComments(BaseModel): 
     comment : str
     username : str
     user_id : int 
     
 
-
-class LoginModel(BaseModel):
-    username : str
-    password : str
+class RegisterPost(BaseModel):
+    ...
 
 
 app =Quart("face analysis")
@@ -268,7 +270,8 @@ async def pannel_admin():
 
         ClassificationComments = fetch_comments()
         FaceAnalysisComments = fetch_faceanalysis_comments()
-        return await render_template("admin.html" , username= quart_session.get("username") , users=all_users , user_count=user_count , ClassificationComments=ClassificationComments , FaceAnalysisComments=FaceAnalysisComments)
+        posts = fetch_all_blogposts()
+        return await render_template("admin.html" , username= quart_session.get("username") , users=all_users , user_count=user_count , ClassificationComments=ClassificationComments , FaceAnalysisComments=FaceAnalysisComments , posts=posts)
     else : 
         await flash("You have to login ⛔" , "info")
         return redirect(url_for("login"))
@@ -309,6 +312,47 @@ async def user_count():
     j = json.dumps(json_data, indent=2)     
     j = json.loads(j) 
     return await render_template("count.html" , json=j )
+
+
+
+@app.route("/blog" , methods=["GET", "POST"])
+async def blogpost():
+    posts = fetch_all_blogposts()
+    for post in posts :
+        released_time = str(post.time_stamp)
+        parsed_time = datetime.strptime(released_time, '%Y-%m-%d %H:%M:%S.%f')
+        formatted_time = parsed_time.strftime('%Y-%m-%d %H:%M:%S')
+        post.time_stamp = relative_time_from_string(formatted_time) 
+    return await render_template("blog.html" , posts=posts)
+
+
+@app.route("/add_post" , methods=["GET","POST"])
+async def posts(): 
+    if quart_session.get("user_id"):
+        post_title = (await request.form)["post_title"]
+        post_content = (await request.form)["post_content"] # ❌ for this field, should assign ((name="")) in form input ❌
+        # post_content = post_content[3:-4] 
+        add_NewPost_to_DB(title=post_title , content=post_content , author=quart_session.get("username") , user_id=quart_session.get("user_id"))
+        return redirect(url_for("blogpost"))
+    else :
+        await flash("You have to login ⛔" , "info")
+        return redirect(url_for("login"))
+    
+
+@app.route("/post_detail/<string:title>" )
+async def post_detail(title):
+    post = read_a_post(title=title)
+    released_time = str(post.time_stamp)
+    parsed_time = datetime.strptime(released_time, '%Y-%m-%d %H:%M:%S.%f')
+    formatted_time = parsed_time.strftime('%Y-%m-%d %H:%M:%S')
+    post.time_stamp = relative_time_from_string(formatted_time)
+    return await render_template("post_detail.html" , post=post)
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+
 
 
 

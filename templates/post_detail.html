@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    POST
+{% endblock %}
+
+
+{% block content %}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css" />
+
+
+<div class="row mt-6">
+    <div class="col-6">
+        <div class="list-group">
+            <div class="container mt-5">
+                <h1>{{ post.title }}</h1>
+                <p>{{ post.content }}</p>
+                <h5> Author : {{ post.author }} </h5>
+                <h6> Released time : {{ post.time_stamp }}</h6>
+                <br>
+                <a href="{{ url_for('blogpost') }}" class="btn btn-primary mt-4">Back to Blog List</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+{% endblock %}
