@@ -1,6 +1,2 @@
-koyeb app init "flask-example" \
-               --git "https://github.com/Kiana-Jahanshid/flask-applications" \
-               --git-branch "main" \
-               --ports "5000:http" \
-               --routes "/:5000" \
-               --env "PORT=5000"
+web: quart -b :5000 app:app
+
