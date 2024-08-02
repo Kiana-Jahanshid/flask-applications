@@ -1,34 +1,45 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    POST
+    postblog
 {% endblock %}
 
 
 {% block content %}
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css" />
 
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css" />
 
-<div class="row mt-6">
-    <div class="col-6">
-        <div class="list-group">
-            <div class="container mt-5">
-                <h1>{{ post.title }}</h1>
-                <p>{{ post.content }}</p>
-                <h5> Author : {{ post.author }} </h5>
-                <h6> Released time : {{ post.time_stamp }}</h6>
-                <br>
-                <a href="{{ url_for('blogpost') }}" class="btn btn-primary mt-4">Back to Blog List</a>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url("{{ url_for('static', filename='images/ban9.jpg') }}"); /* Replace with your image URL */
+            background-repeat: repeat;
+            background-attachment: initial;
+            background-size: cover; /* Ensure the image is displayed at its original size */
+        }
+    </style>
+
+    <div class="row mt-6">
+        <div class="col-9"  style="padding-left:400px; padding-top: 50px;">
+            <div class="list-group">
+                <div class="container mt-5 list-group-item list-group-item-action" aria-current="true" style="margin-top: 10px; border:3px; border-color:blue;">
+                    <h1 style="padding-bottom: 20px;">{{ post.title }}</h1>
+                    <p style="padding-bottom: 19px;"> Author : {{ post.author }}  , Released time : {{ post.time_stamp }}</p>
+                    <p> </p>                    
+                    <h6>{{ post.content }}</h6>
+                    <br>
+                    <a href="{{ url_for('blogpost') }}" class="btn mt-4"><u>Back to Blog</u></a>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 {% endblock %}

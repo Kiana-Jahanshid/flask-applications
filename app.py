@@ -8,7 +8,7 @@ import cv2
 from pydantic import BaseModel
 import bcrypt
 # from deepface import DeepFace
-from databasefile import fetch_user , add_user_to_db , fetch_all_users , relative_time_from_string , add_comment_to_db , add_comment_ToFaceAnalysisDB ,   fetch_comments , fetch_faceanalysis_comments , fetch_all_blogposts , add_NewPost_to_DB , read_a_post
+from databasefile import fetch_user , add_user_to_db , fetch_all_users , relative_time_from_string , add_comment_to_db , add_comment_ToFaceAnalysisDB ,   fetch_comments , fetch_faceanalysis_comments , fetch_all_blogposts , add_NewPost_to_DB , read_a_post  , editPost_DB , delete_post ,read_a_post_id
 from PIL import Image
 from io import BytesIO 
 import base64
@@ -260,7 +260,7 @@ async def pose_detection():
 
 @app.route("/admin" , methods=["GET", "POST"])
 async def pannel_admin():
-    if quart_session.get("user_id") : #or quart_session.get("role") != "Admin":
+    if quart_session.get("user_id") : 
         all_users , user_count = fetch_all_users()
         for user in all_users :
             joined_time = str(user.joined_time)
@@ -270,8 +270,7 @@ async def pannel_admin():
 
         ClassificationComments = fetch_comments()
         FaceAnalysisComments = fetch_faceanalysis_comments()
-        posts = fetch_all_blogposts()
-        return await render_template("admin.html" , username= quart_session.get("username") , users=all_users , user_count=user_count , ClassificationComments=ClassificationComments , FaceAnalysisComments=FaceAnalysisComments , posts=posts)
+        return await render_template("admin.html" , username= quart_session.get("username") , users=all_users , user_count=user_count , ClassificationComments=ClassificationComments , FaceAnalysisComments=FaceAnalysisComments )
     else : 
         await flash("You have to login ⛔" , "info")
         return redirect(url_for("login"))
@@ -326,21 +325,66 @@ async def blogpost():
     return await render_template("blog.html" , posts=posts)
 
 
-@app.route("/add_post" , methods=["GET","POST"])
-async def posts(): 
+
+@app.route("/admin_blogposts" , methods=["GET", "POST"])
+async def admin_blogposts():
+    if quart_session.get("user_id") : 
+        all_users , user_count = fetch_all_users()
+        for user in all_users :
+            joined_time = str(user.joined_time)
+            parsed_time = datetime.strptime(joined_time, '%Y-%m-%d %H:%M:%S.%f')
+            formatted_time = parsed_time.strftime('%Y-%m-%d %H:%M:%S')
+            user.joined_time = relative_time_from_string(formatted_time)  
+        posts = fetch_all_blogposts()
+        return await render_template("admin_blogposts.html" , username= quart_session.get("username") , users=all_users , user_count=user_count , posts=posts)
+    else : 
+        await flash("You have to login ⛔" , "info")
+        return redirect(url_for("login"))
+
+
+
+@app.route("/admin/add_post" , methods=["GET","POST"])
+async def add_new_posts(): 
     if quart_session.get("user_id"):
         post_title = (await request.form)["post_title"]
         post_content = (await request.form)["post_content"] # ❌ for this field, should assign ((name="")) in form input ❌
-        # post_content = post_content[3:-4] 
         add_NewPost_to_DB(title=post_title , content=post_content , author=quart_session.get("username") , user_id=quart_session.get("user_id"))
-        return redirect(url_for("blogpost"))
+        return redirect(url_for("admin_blogposts"))
     else :
         await flash("You have to login ⛔" , "info")
         return redirect(url_for("login"))
     
 
-@app.route("/post_detail/<string:title>" )
-async def post_detail(title):
+@app.route("/admin/delete_post/<int:post_id>", methods=["GET" ,"POST"])
+async def deletePost(post_id):
+    if quart_session.get("user_id"):
+        delete_post(post_id=post_id)
+        return redirect(url_for("admin_blogposts"))
+    else :
+        await flash("You have to login ⛔" , "info")
+        return redirect(url_for("login"))
+
+
+@app.route("/admin/edit_post/<int:post_id>", methods=["GET", "POST"])
+async def editPost(post_id):
+    if quart_session.get("user_id"):    
+        if request.method == "POST":
+            post_title = (await request.form)["edited_post_title"]
+            post_content = (await request.form)["edited_post_content"]
+            post_author = quart_session["username"]
+            editPost_DB(post_title , post_content , post_author , post_id)
+            return redirect(url_for("admin_blogposts"))
+        elif request.method == "GET" :
+            post = read_a_post_id(post_id)
+            return await render_template("admin_edit_posts.html", title=post.title , content=post.content)
+
+    else :
+        await flash("You have to login ⛔" , "info")
+        return redirect(url_for("login"))
+
+
+@app.route("/<string:title>")
+async def postdetail(title):
     post = read_a_post(title=title)
     released_time = str(post.time_stamp)
     parsed_time = datetime.strptime(released_time, '%Y-%m-%d %H:%M:%S.%f')
@@ -350,7 +394,7 @@ async def post_detail(title):
 
 
 if __name__ == "__main__":
-    app.run(debug=True , host="0.0.0.0" ,port="5000")
+    app.run(debug=True , host="0.0.0.0" ,port="5000")# for koyeb :  host="0.0.0.0" ,port="5000"
 
 
 

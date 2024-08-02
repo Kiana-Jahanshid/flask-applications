@@ -44,7 +44,7 @@ class BlogPost(SQLModel , table=True):
 
 # "postgresql://root:OMVzj1tCUqSnwH3iZ6WhNz1C@webappdb:5432/postgres" it's only for deploying in liara 
 # "postgresql://username:pass@postgr:5432/database"  --->>  will run on :  http://127.0.0.1:8080/
-# "postgres://koyeb-adm:A3tIEKbVC9Si@ep-shrill-bread-a28dxh64.eu-central-1.pg.koyeb.app/koyebdb"
+# "postgresql://koyeb-adm:A3tIEKbVC9Si@ep-shrill-bread-a28dxh64.eu-central-1.pg.koyeb.app/koyebdb"
 engine = create_engine(url= "postgresql://koyeb-adm:A3tIEKbVC9Si@ep-shrill-bread-a28dxh64.eu-central-1.pg.koyeb.app/koyebdb", echo=True) #"sqlite:///./database.db" -  "postgresql://username:pass@postgr:5432/database"
 SQLModel.metadata.create_all(engine)
 
@@ -139,3 +139,28 @@ def read_a_post(title):
         selected_post = select(BlogPost).where(BlogPost.title == title)
         post = db_session.exec(selected_post).first()
         return post
+    
+def read_a_post_id(id):
+    with Session(engine) as db_session: 
+        selected_post = select(BlogPost).where(BlogPost.id == id)
+        post = db_session.exec(selected_post).first()
+        return post
+
+def editPost_DB(title , content , author , post_id ):
+    with Session(engine) as db_session:
+        edited_post = select(BlogPost).where(BlogPost.id == post_id)
+        post = db_session.exec(edited_post).first()
+        post.title = title
+        post.content = content
+        post.author = author
+        post.time_stamp = datetime.now()
+        db_session.commit()
+        db_session.refresh(post)
+
+
+def delete_post(post_id):
+    with Session(engine) as db_session:
+        selected_post = select(BlogPost).where(BlogPost.id == post_id)
+        post = db_session.exec(selected_post).first()
+        db_session.delete(post)
+        db_session.commit()

@@ -86,86 +86,53 @@
             </li>
           </ul>
         </nav>
-        <!-- partial -->
+
         <div class="main-panel">
-          <div class="content-wrapper">
-            <div class="page-header">
-              <h3 class="page-title">
-                <span class="page-title-icon bg-gradient-primary text-white me-2">
-                  <i class="mdi mdi-home"></i>
-                </span> Dashboard
-              </h3>
-              <nav aria-label="breadcrumb">
-                <ul class="breadcrumb">
-                  <li class="breadcrumb-item active" aria-current="page">
-                    <span></span>Overview <i class="mdi mdi-alert-circle-outline icon-sm text-primary align-middle"></i>
-                  </li>
-                </ul>
-              </nav>
-            </div>
-            <div class="row">
-              <div class="col-md-4 stretch-card grid-margin">
-                <div class="card bg-gradient-danger card-img-holder text-white">
-                  <div class="card-body">
-                    <img src="static/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
-                    <h4 class="font-weight-normal mb-3"> Total Registered Users <i class="mdi mdi-chart-line mdi-24px float-end"></i>
-                    </h4>
-                    <h2 class="mb-5">{{ user_count }}</h2>
-                  </div>
-                </div>
+            <div class="content-wrapper">
+              <div class="page-header">
+                <h3 class="page-title">
+                  <span class="page-title-icon bg-gradient-primary text-white me-2">
+                    <i class="mdi mdi-home"></i>
+                  </span> Dashboard
+                </h3>
+                <nav aria-label="breadcrumb">
+                  <ul class="breadcrumb">
+                    <li class="breadcrumb-item active" aria-current="page">
+                      <span></span>Overview <i class="mdi mdi-alert-circle-outline icon-sm text-primary align-middle"></i>
+                    </li>
+                  </ul>
+                </nav>
               </div>
-              <div class="col-md-4 stretch-card grid-margin">
-                <div class="card bg-gradient-info card-img-holder text-white">
-                  <div class="card-body">
-                    <img src="static/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
-                    <h4 class="font-weight-normal mb-3">Total visits <i class="mdi mdi-bookmark-outline mdi-24px float-end"></i>
-                    </h4>
-                    <h2 class="mb-5">{{ user_count }}</h2>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-4 stretch-card grid-margin">
-                <div class="card bg-gradient-success card-img-holder text-white">
-                  <div class="card-body">
-                    <img src="static/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
-                    <h4 class="font-weight-normal mb-3">Visitors Online <i class="mdi mdi-diamond mdi-24px float-end"></i>
-                    </h4>
-                    <h2 class="mb-5">1</h2>
-                    <h6 class="card-text"></h6>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <!-- <<<<<<<<<<<<<<<<<<<<<<<<<     BLOG POSTS     >>>>>>>>>>>>>>>>>>>>>>-->
             <div class="row">
               <div class="col-12 grid-margin">
                 <div class="card">
                   <div class="card-body">
-                    <h4 class="card-title">Registered Users </h4>
+                    <h4 class="card-title">blog posts </h4>
                     <div class="table-responsive">
                       <table class="table">
                         <thead>
                           <tr>
-                            <th> Username </th>
-                            <th> Email </th>
-                            <th> Joined time </th>
-                            <th> City </th>
+                            <th> Title </th>
+                            <th> Content </th>
+                            <th> Author </th>
+                            <th> Time </th>
                           </tr>
                         </thead>
                         <tbody>
-
-                        {% for user in users %}  
+                        {% for post in posts %}  
                           <tr>
                             <td>
-                              <img src="static/images/faces-clipart/pic-4.png" class="me-2" alt="image"> {{ user.username }}
+                              <label class="me-2">{{ post.title | safe }}</label>
                             </td>
                             <td>
-                              <label class="badge badge-gradient-danger">{{ user.email }}</label>
+                              <label class="me-2 text-truncate">{{ post.content | safe }}</label>
                             </td>
                             <td>
-                              <label class="badge badge-gradient-info">{{ user.joined_time }}</label>
+                              <label class="me-2">{{ post.author | safe }}</label>
                             </td>
                             <td>
-                              <label class="badge badge-gradient-success">{{ user.city }}</label>
+                              <label class="me-2">{{ post.time_stamp | safe }}</label>
                             </td>
                           </tr>
                         {% endfor %}
@@ -176,75 +143,74 @@
                 </div>
               </div>
             </div>
-
-
-            <div class="row">
-              <div class="col-12 grid-margin">
-                <div class="card">
-                  <div class="card-body">
-                    <h4 class="card-title">Image Classification's Comments </h4>
-                    <div class="table-responsive">
-                      <table class="table">
-                        <thead>
-                          <tr>
-                            <th> Username </th>
-                            <th> comment </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                        {% for comment , username in ClassificationComments %}  
+            
+        <div class="row">
+            <div class="container mt-5">
+              <h1>Manage Comments</h1>
+              <table class="table table-bordered mt-3">
+                  <thead>
+                      <tr>
+                          <th>Title</th>                        
+                          <th>Author</th>
+                          <th>Time</th>
+                          <th>Actions</th>
+                      </tr>
+                  </thead>
+                  <tbody id="commentTableBody">
+                      <tr>
+                        {% for post in posts %}  
                           <tr>
                             <td>
-                              <img src="static/images/faces-clipart/pic-4.png" class="me-2" alt="image"> {{ username }}
+                              <label class="me-1">{{ post.title | safe }}</label>
                             </td>
                             <td>
-                              <label class="me-2">{{ comment | safe }}</label>
-                            </td>
-                          </tr>
-                        {% endfor %}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-
-            <div class="row">
-              <div class="col-12 grid-margin">
-                <div class="card">
-                  <div class="card-body">
-                    <h4 class="card-title">Face Analysis's Comments </h4>
-                    <div class="table-responsive">
-                      <table class="table">
-                        <thead>
-                          <tr>
-                            <th> Username </th>
-                            <th> comment </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                        {% for comment , username in FaceAnalysisComments %}  
-                          <tr>
-                            <td>
-                              <img src="static/images/faces-clipart/pic-4.png" class="me-2" alt="image"> {{ username }}
+                              <label class="me-1">{{ post.author | safe }}</label>
                             </td>
                             <td>
-                              <label class="me-2">{{ comment | safe }}</label>
+                              <label class="me-1">{{ post.time_stamp | safe }}</label>
+                            </td>                        
+                            <td>
+                                <a  class="btn btn-warning btn-sm "   href="/admin/edit_post/{{ post.id | safe }}" >Edit</a>
+                                <a  class="btn btn-danger btn-sm" data-id="1" href="/admin/delete_post/{{ post.id | safe }}">Delete</a>
                             </td>
                           </tr>
                         {% endfor %}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                      </tr>            
+                  </tbody>
+              </table>
             </div>
+        </div>
+
+
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ADD NEW POST TO BLOG ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <div class="row">
+            <div class="container mt-5">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Add a New Post</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="/admin/add_post">
+                            <div class="form-group">
+                                <label for="postTitle">Post Title</label>
+                                <input type="text" name="post_title" class="form-control" id="postTitle" placeholder="Enter post title" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="postContent">Post Content</label>
+                                <textarea name="post_content" class="form-control" id="postContent" rows="5" placeholder="Enter post content" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Post</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         </div>
       </div>
     </div>
+
 
     <script src="static/vendors/js/vendor.bundle.base.js"></script>
     <script src="static/vendors/chart.js/chart.umd.js"></script>
@@ -256,5 +222,29 @@
     <script src="static/js/jquery.cookie.js"></script>
     <script src="static/js/dashboard.js"></script>
 
+
+    <script>
+      // Handle edit button click
+      $(document).on('click', '.edit-btn', function() {
+          const id = $(this).data('id');
+          const comment = $(this).data('comment');
+          $('#commentId').val(id);
+          $('#commentText').val(comment);
+      });
+
+
+
+      // Handle form submission for editing comment
+      $('#editCommentForm').on('submit', function(e) {
+          e.preventDefault();
+          const id = $('#commentId').val();
+          const updatedComment = $('#commentText').val();
+          // Perform AJAX request to update the comment (this is just a simulation)
+          // Simulate updating the comment in the table
+          $(`#commentTableBody .edit-btn[data-id="${id}"]`).closest('tr').find('td:eq(1)').text(updatedComment);
+          $('#editModal').modal('hide');
+          alert('Comment updated successfully.');
+      });
+  </script>
   </body>
 </html>
