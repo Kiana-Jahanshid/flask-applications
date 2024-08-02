@@ -10,3 +10,4 @@ onnxruntime
 Fastapi
 uvicorn
 scikit-image
+pyyaml
