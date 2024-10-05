@@ -1,5 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "layout.html" %}
+
+{% block title %}
+    Upload image
+{% endblock %}
+
+
+{% block content %}
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -14,6 +20,10 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css" />
   </head>
   <body>
     <div class="container-scroller">
@@ -194,11 +204,11 @@
                         <form method="post" action="/admin/add_post">
                             <div class="form-group">
                                 <label for="postTitle">Post Title</label>
-                                <input type="text" name="post_title" class="form-control" id="postTitle" placeholder="Enter post title" required>
+                                <textarea type="text" name="post_title" class="form-control" id="postTitle" placeholder="Enter post title" required></textarea>
                             </div>
-                            <div class="form-group">
+                            <div class="mb-4">
                                 <label for="postContent">Post Content</label>
-                                <textarea name="post_content" class="form-control" id="postContent" rows="5" placeholder="Enter post content" required></textarea>
+                                <textarea id="editor" name="post_content" class="form-control" id="exampleFormControlTextarea1" rows="8" placeholder="Enter post content" required></textarea>                            
                             </div>
                             <button type="submit" class="btn btn-primary">Add Post</button>
                         </form>
@@ -246,5 +256,41 @@
           alert('Comment updated successfully.');
       });
   </script>
-  </body>
-</html>
+
+  <script type="importmap">
+    {
+        "imports": {
+            "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/42.0.1/ckeditor5.js",
+            "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/42.0.1/"
+        }
+    }
+</script>
+
+
+<script type="module">
+    import {
+        ClassicEditor,
+        Essentials,
+        Bold,
+        Italic,
+        Font,
+        Paragraph
+    } from 'ckeditor5';
+
+    ClassicEditor
+        .create( document.querySelector( '#editor' ), {
+            plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
+            toolbar: {
+                items: [
+                    'undo', 'redo', '|', 'bold', 'italic', '|',
+                    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+                ]
+            }
+        } )
+        .then( /* ... */ )
+        .catch( /* ... */ );
+</script>
+  
+  <!-- </body>
+</html> -->
+{% endblock %}
